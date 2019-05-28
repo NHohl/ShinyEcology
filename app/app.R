@@ -43,23 +43,31 @@ ui <- fluidPage(
   br(),
   sidebarLayout(
     sidebarPanel(sliderInput("N01Comp", "N01",
-                             min = 1, max = 100, value = 2),
+                             min = 1, max = 100, value = 50),
                  sliderInput("N02Comp", "N02",
-                                          min = 1, max = 100, value = 1),
+                                          min = 1, max = 100, value = 50),
                  numericInput("r1Comp", "r1",
                              min = -5, max = 5, value = 1, step = 0.01),
                  numericInput("r2Comp", "r2",
                              min = -5, max = 5, value = 0.1, step = 0.01),
-                 numericInput("K1Comp", "K1", min = 1, max = 500, value = 5, step = 1),
+                 numericInput("K1Comp", "K1", min = 1, max = 500, value = 75, step = 1),
                  numericInput("a12Comp", "alpha", min = 0, max = 3, value = 0.01, step = 0.005),
                  numericInput("K2Comp", "K2", min = 0, max = 3, value = 50, step = 1),
-                 numericInput("a21Comp", "beta", min = 0, max = 0.1, value = 0.1, step = 0.005),
+                 numericInput("a21Comp", "beta", min = 0, max = 0.1, value = 0.02, step = 0.005),
                  sliderInput("tComp", "t",
                              min = 1, max = 300, value = 100)
                  
     ),
     mainPanel(plotOutput("compPlot"))
-    )
+
+  ),
+  
+  br(),
+  sidebarLayout(
+    sidebarPanel("Usa os mesmos valores do grafico de competicao."),
+    mainPanel(plotOutput("compIsoPlot"))
+    
+  )
 
 )#end of UI
 
@@ -78,30 +86,8 @@ server <- function(input, output){
     # actual input.
     df$n <- input$N0GeoIn * (1 + input$RGeoIn) ^ df$t
     #print(df) #for debugging
-    
-#Problem: in real life, when N gets to 0 it sticks to 0 and never changes. The 
-#mathematical function alone can go below 0 and back indefinitely.
-#Solution:
-    hit_zero = FALSE
-    for (i in df$n){
-      #print(df$n[i])
-      #print(i)
-      if (i > 0 & hit_zero == F){
-        #do nothing
-        #print(i)
-        #print(df$n[df$n %in% i])
-      }else{
-        #print(which(df$n %in% i))
-        #print(df$n[df$n %in% i])
-        #df$n[df$n %in% i] <- 0 #Gets the indexes of values < 0 and uses the
-#index to change the values to 0.
-        hit_zero = TRUE
-      }
-      #print(i)
-      print(hit_zero)
-    }
-    print(df)
     df
+    #note: the minimum possible R value in real life is -1
   })
   
   #renders the GEOMETRIC GROWTH plot
@@ -193,6 +179,8 @@ server <- function(input, output){
 
   
   #--------------- INTERESPECIFIC COMPETITION  (with continuous logistic growth)
+  #using deSolve package
+  #code taken from A Primer of Ecology With R
   t3 <- c(0:300)
   df3 <- data.frame(t3)
   
@@ -200,8 +188,9 @@ server <- function(input, output){
     df3 <- df3[df3$t3 %in% seq(from=0,to=input$tComp, by=1),]
     a <- as.vector(df3)
     #print(df3) #debugging
-    #se quiser trocar para K no input, calcular a11 com 1/K
     
+    # a11 and a22 aren't given directly by the input, but calculated from K
+    # TODO See how to interchange easily between using K and a values
     parms <- c(r1 = input$r1Comp, r2 = input$r2Comp, a11 = 1/input$K1Comp,
                a21 = input$a21Comp, a22 = 1/input$K2Comp, a12 = input$a12Comp) #named vector of doubles
     
@@ -260,6 +249,44 @@ server <- function(input, output){
       )
   })
   
+ #--------- COMPETITION ISOCLINES
+  # Uses the same input from the Competition Plot.
+  
+  n4max <- 0:100 # Creates a vector with the max input N0 as length, just like
+  # t in other plots.
+  df4 <- data.frame(Nmax = n4max) # Uses it to create the appropriatly sized dataframe.
+ 
+  Isodf <- reactive({
+    # a11 and a22 aren't given directly by the input, but calculated from K
+    # TODO See how to interchange easily between using K and a values
+    parms <- matrix(c(a11 = 1/input$K1Comp, a12 = input$a12Comp,
+                      a21 = input$a21Comp, a22 = 1/input$K2Comp),
+                    ncol = 2, byrow = T)
+    
+    N1Iso <- 1/parms[1, 1] - (parms[1, 2]/parms[1, 1]) * n4max #would be N2 in the formula
+    N2Iso <- 1/parms[2, 2] - (parms[2, 1]/parms[2, 2]) * n4max #would be N1 in the formula
+   
+    df4$Iso1 <- N1Iso
+    df4$Iso2 <- N2Iso
+    
+    df4
+    
+    #print(df4) #debugging
+  })
+
+  # renders the COMPETITION ISOCLINES
+  output$compIsoPlot<-renderPlot({
+    ggplot(Isodf(), aes(x = Nmax, y = Iso1)) +
+      geom_line() +
+      geom_line(aes(x = Nmax, y = Iso2)) +
+      ylim(0,100)
+    
+    #TODO DEIXAR GRAFICO MAIS BONITO
+    # COLOCAR ETIQUETAS NAS ISOCLINAS
+    # MUDAR OS VALORES NOS EIXOS
+    # MARCAR O PONTO DE EQUILIBRIO
+    
+  })
   
 
   
@@ -270,7 +297,7 @@ server <- function(input, output){
   
   #un-comment the last line for testing
   # by using observe you can access
-  #an reactive variable (like an input) outside a reactive context (that could be
+  #a reactive variable (like an input) outside of reactive context (that could be
   #a render function)
   #this is not mapped to the ui and just prints the value in the console
   
