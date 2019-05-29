@@ -52,10 +52,12 @@ ui <- fluidPage(
                              min = -5, max = 5, value = 1, step = 0.01),
                  numericInput("r2Comp", "r2",
                              min = -5, max = 5, value = 0.1, step = 0.01),
-                 numericInput("K1Comp", "K1", min = 1, max = 500, value = 75, step = 1),
-                 numericInput("a12Comp", "alpha", min = 0, max = 3, value = 0.01, step = 0.005),
+                 numericInput("K1Comp", "K1", min = 1, max = 500, value = 100, step = 1),
                  numericInput("K2Comp", "K2", min = 0, max = 3, value = 50, step = 1),
-                 numericInput("a21Comp", "beta", min = 0, max = 0.1, value = 0.02, step = 0.005),
+                 numericInput("a12Comp", "a12 / alpha", min = 0, max = 3, value = 0.005, step = 0.005),
+                 numericInput("a21Comp", "a21 / beta", min = 0, max = 0.1, value = 0.005, step = 0.005),
+                 numericInput("a11Comp", "a11", min = 0, max = 0.1, value = 0.01, step = 0.005),
+                 numericInput("a22Comp", "a22", min = 0, max = 0.1, value = 0.01, step = 0.005),
                  sliderInput("tComp", "t",
                              min = 1, max = 300, value = 100)
                  
@@ -193,8 +195,8 @@ server <- function(input, output){
     
     # a11 and a22 aren't given directly by the input, but calculated from K
     # TODO See how to interchange easily between using K and a values
-    parms <- c(r1 = input$r1Comp, r2 = input$r2Comp, a11 = 1/input$K1Comp,
-               a21 = input$a21Comp, a22 = 1/input$K2Comp, a12 = input$a12Comp) #named vector of doubles
+    parms <- c(r1 = input$r1Comp, r2 = input$r2Comp, a11 = input$a11Comp,
+               a21 = input$a21Comp, a22 = input$a22Comp, a12 = input$a12Comp) #named vector of doubles
     
     initialN <- c(input$N01Comp,input$N02Comp)
     
@@ -253,29 +255,30 @@ server <- function(input, output){
   
  #--------- COMPETITION ISOCLINES
   # Uses the same input from the Competition Plot.
-  
-  n4max <- 0:100 # Creates a vector with the max input N0 as length, just like
-  # t in other plots.
-  df4 <- data.frame(Nmax = n4max) # Uses it to create the appropriatly sized dataframe.
+  n4max <- 300
+  n4maxv <- 0:n4max
+  df4 <- data.frame(Nmax = n4maxv) # Uses it to create the appropriatly sized dataframe.
  
   Isodf <- reactive({
     # a11 and a22 aren't given directly by the input, but calculated from K
     # TODO See how to interchange easily between using K and a values
-    parms <- matrix(c(a11 = 1/input$K1Comp, a12 = input$a12Comp,
-                      a21 = input$a21Comp, a22 = 1/input$K2Comp),
+    parms <- matrix(c(a11 = input$a11Comp, a12 = input$a12Comp,
+                      a21 = input$a21Comp, a22 = input$a22Comp),
                     ncol = 2, byrow = T)
     
-    N1Iso <- 1/parms[1, 1] - (parms[1, 2]/parms[1, 1]) * n4max #would be N2 in the formula
-    N2Iso <- 1/parms[2, 2] - (parms[2, 1]/parms[2, 2]) * n4max #would be N1 in the formula
+    print(parms)
+    
+    N1Iso <- 1/parms[1, 1] - (parms[1, 2]/parms[1, 1]) * n4maxv #would be N2 in the formula
+    N2Iso <- 1/parms[2, 2] - (parms[2, 1]/parms[2, 2]) * n4maxv #would be N1 in the formula
    
     df4$Iso1 <- N1Iso
     df4$Iso2 <- N2Iso
     
-    df4$color1 <- rep("N1", times = 101)
-    df4$color2 <- rep("N2", times = 101)
+    df4$color1 <- rep("N1", times = n4max + 1)
+    df4$color2 <- rep("N2", times = n4max + 1)
     
     #print(df4) #debugging
-    print(head(df4[,2:3])) #prints N1Iso and N2Iso cols
+    print(head(df4[,1:3])) #prints N1Iso and N2Iso cols
     
     df4
   })
@@ -284,11 +287,12 @@ server <- function(input, output){
   output$compIsoPlot<-renderPlot({
     ggplot(Isodf(), aes(x = Iso1, y = Nmax,
                         color = color1)) + #N1 iso
-      geom_line( size = 1.2) +
+      geom_line(size = 1.2) +
       geom_line(aes(x = Nmax, y = Iso2,
                     color = color2), #N2 iso
                 size = 1.2) + 
       ylim(0,200) +
+      xlim(0,200) +
       theme_bw() +
       ggtitle("Isoclinas") +
       xlab("N1") +
@@ -304,8 +308,8 @@ server <- function(input, output){
                                        family = "Calibri", face = "bold"),
             legend.title = element_blank()
       ) +
-      annotate("text", label = "K1", y = input$K1Comp + 5, x = 0, size = 6, color = "black") +
-      annotate("text", label = "K1/a", y = input$a21Comp + 5, x = 0, size = 6, color = "black")
+      annotate("text", label = "K1", x = input$K1Comp + 5, y = 0, size = 6, color = "black") +
+      annotate("text", label = "K1/a", y = (1/input$a11Comp/input$a12Comp), x = 0, size = 6, color = "black")
         
     
     # TODO DEIXAR GRAFICO MAIS BONITO
