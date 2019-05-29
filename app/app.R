@@ -130,7 +130,7 @@ server <- function(input, output){
     geom_line(color = "lightsteelblue4") +
     geom_point(colour='lightsteelblue4', size = 3) +
     theme_bw() +
-    ggtitle("Crescimento Exponencial Contínuo") +
+    ggtitle("Crescimento Exponencial Continuo") +
     xlab("t") +
     ylab("N(t)") +
     theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -165,7 +165,7 @@ server <- function(input, output){
       annotate("text", x = input$tLogIn, y = (input$kLogIn - input$kLogIn/20 ),
                label = "K", size = 6, color = "red1") + # o y desce o "K" em 20% do valor para arrumar
       theme_bw() +
-      ggtitle("Crescimento Logístico") +
+      ggtitle("Crescimento Logistico") +
       xlab("t") +
       ylab("N(t)") +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -234,7 +234,7 @@ server <- function(input, output){
       annotate("text", x = input$tLogIn, y = (input$K2Comp - (input$K2Comp)/20 ),
                label = "K2", size = 6, color = "black") +
       theme_bw() +
-      ggtitle("Competição Interespecífica") +
+      ggtitle("Competicao Interespecifica") +
       xlab("t") +
       ylab("N(t)") +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -269,17 +269,38 @@ server <- function(input, output){
     df4$Iso1 <- N1Iso
     df4$Iso2 <- N2Iso
     
+    df4$color1 <- rep("N1", times = 101)
+    df4$color2 <- rep("N2", times = 101)
+    
     df4
     
-    #print(df4) #debugging
+    print(df4) #debugging
   })
 
   # renders the COMPETITION ISOCLINES
   output$compIsoPlot<-renderPlot({
-    ggplot(Isodf(), aes(x = Nmax, y = Iso1)) +
-      geom_line() +
-      geom_line(aes(x = Nmax, y = Iso2)) +
-      ylim(0,100)
+    ggplot(Isodf(), aes(x = Nmax, y = Iso1,
+                        color = color1)) + #N1 iso
+      geom_line( size = 1.2) +
+      geom_line(aes(x = Nmax, y = Iso2,
+                    color = color2), #N2 iso
+                size = 1.2) + 
+      ylim(0,100) +
+      theme_bw() +
+      ggtitle("Isoclinas") +
+      xlab("N1") +
+      theme_bw() +
+      ylab("N2") +
+      theme(plot.title = element_text(size = 24, hjust = 0.5,
+                                      family = "Calibri", face = "bold"),
+            axis.title = element_text(size = 20,
+                                      family = "Calibri", face = "bold"),
+            axis.text = element_text(size = 16,
+                                     family = "Calibri", face = "bold"),
+            legend.text = element_text(size = 16,
+                                       family = "Calibri", face = "bold"),
+            legend.title = element_blank()
+      )
     
     #TODO DEIXAR GRAFICO MAIS BONITO
     # COLOCAR ETIQUETAS NAS ISOCLINAS
@@ -325,3 +346,6 @@ server <- function(input, output){
 } #end of server, don't exclude (again)
 
 shinyApp(ui = ui, server = server)
+
+# rtsudio Version 1.1.442
+# R version 3.4.3 (2017-11-30) Kite-Eating Tree 
