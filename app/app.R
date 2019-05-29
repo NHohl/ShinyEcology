@@ -3,6 +3,8 @@ library("ggplot2")
 library("extrafont")
 library("deSolve")
 
+# Must be saved in UTC-8 to show accents correctly.
+
 ui <- fluidPage(
   titlePanel("A Primer of Ecology With Shiny ;p", "Nathalia's shiny app"),
   br(),
@@ -64,7 +66,7 @@ ui <- fluidPage(
   
   br(),
   sidebarLayout(
-    sidebarPanel("Usa os mesmos valores do grafico de competicao."),
+    sidebarPanel("Usa os mesmos valores do gráfico de competição."),
     mainPanel(plotOutput("compIsoPlot"))
     
   )
@@ -130,7 +132,7 @@ server <- function(input, output){
     geom_line(color = "lightsteelblue4") +
     geom_point(colour='lightsteelblue4', size = 3) +
     theme_bw() +
-    ggtitle("Crescimento Exponencial Continuo") +
+    ggtitle("Crescimento Exponencial Contínuo") +
     xlab("t") +
     ylab("N(t)") +
     theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -165,7 +167,7 @@ server <- function(input, output){
       annotate("text", x = input$tLogIn, y = (input$kLogIn - input$kLogIn/20 ),
                label = "K", size = 6, color = "red1") + # o y desce o "K" em 20% do valor para arrumar
       theme_bw() +
-      ggtitle("Crescimento Logistico") +
+      ggtitle("Crescimento Logístico") +
       xlab("t") +
       ylab("N(t)") +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -234,7 +236,7 @@ server <- function(input, output){
       annotate("text", x = input$tLogIn, y = (input$K2Comp - (input$K2Comp)/20 ),
                label = "K2", size = 6, color = "black") +
       theme_bw() +
-      ggtitle("Competicao Interespecifica") +
+      ggtitle("Competição Interespecífica") +
       xlab("t") +
       ylab("N(t)") +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -272,9 +274,9 @@ server <- function(input, output){
     df4$color1 <- rep("N1", times = 101)
     df4$color2 <- rep("N2", times = 101)
     
-    df4
+    #print(df4) #debugging
     
-    print(df4) #debugging
+    df4
   })
 
   # renders the COMPETITION ISOCLINES
