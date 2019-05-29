@@ -275,19 +275,20 @@ server <- function(input, output){
     df4$color2 <- rep("N2", times = 101)
     
     #print(df4) #debugging
+    print(head(df4[,2:3])) #prints N1Iso and N2Iso cols
     
     df4
   })
 
-  # renders the COMPETITION ISOCLINES
+  # renders the COMPETITION ISOCLINES plot
   output$compIsoPlot<-renderPlot({
-    ggplot(Isodf(), aes(x = Nmax, y = Iso1,
+    ggplot(Isodf(), aes(x = Iso1, y = Nmax,
                         color = color1)) + #N1 iso
       geom_line( size = 1.2) +
       geom_line(aes(x = Nmax, y = Iso2,
                     color = color2), #N2 iso
                 size = 1.2) + 
-      ylim(0,100) +
+      ylim(0,200) +
       theme_bw() +
       ggtitle("Isoclinas") +
       xlab("N1") +
@@ -302,9 +303,12 @@ server <- function(input, output){
             legend.text = element_text(size = 16,
                                        family = "Calibri", face = "bold"),
             legend.title = element_blank()
-      )
+      ) +
+      annotate("text", label = "K1", y = input$K1Comp + 5, x = 0, size = 6, color = "black") +
+      annotate("text", label = "K1/a", y = input$a21Comp + 5, x = 0, size = 6, color = "black")
+        
     
-    #TODO DEIXAR GRAFICO MAIS BONITO
+    # TODO DEIXAR GRAFICO MAIS BONITO
     # COLOCAR ETIQUETAS NAS ISOCLINAS
     # MUDAR OS VALORES NOS EIXOS
     # MARCAR O PONTO DE EQUILIBRIO
