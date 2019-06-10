@@ -54,8 +54,8 @@ ui <- fluidPage(
                              min = -5, max = 5, value = 0.1, step = 0.01),
                  numericInput("K1Comp", "K1", min = 1, max = 500, value = 100, step = 1),
                  numericInput("K2Comp", "K2", min = 0, max = 3, value = 50, step = 1),
-                 numericInput("a12Comp", "a12 / alpha", min = 0, max = 3, value = 0.005, step = 0.005),
-                 numericInput("a21Comp", "a21 / beta", min = 0, max = 0.1, value = 0.005, step = 0.005),
+                 numericInput("alphaComp", "alpha", min = 0, max = 3, value = 0.5, step = 0.005),
+                 numericInput("betaComp", "beta", min = 0, max = 0.1, value = 0.5, step = 0.005),
                  numericInput("a11Comp", "a11", min = 0, max = 0.1, value = 0.01, step = 0.005),
                  numericInput("a22Comp", "a22", min = 0, max = 0.1, value = 0.01, step = 0.005),
                  sliderInput("tComp", "t",
@@ -134,7 +134,7 @@ server <- function(input, output){
     geom_line(color = "lightsteelblue4") +
     geom_point(colour='lightsteelblue4', size = 3) +
     theme_bw() +
-    ggtitle("Crescimento Exponencial Contínuo") +
+    ggtitle("Crescimento Exponencial Cont??nuo") +
     xlab("t") +
     ylab("N(t)") +
     theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -169,7 +169,7 @@ server <- function(input, output){
       annotate("text", x = input$tLogIn, y = (input$kLogIn - input$kLogIn/20 ),
                label = "K", size = 6, color = "red1") + # o y desce o "K" em 20% do valor para arrumar
       theme_bw() +
-      ggtitle("Crescimento Logístico") +
+      ggtitle("Crescimento Log??stico") +
       xlab("t") +
       ylab("N(t)") +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -196,14 +196,14 @@ server <- function(input, output){
     # a11 and a22 aren't given directly by the input, but calculated from K
     # TODO See how to interchange easily between using K and a values
     parms <- c(r1 = input$r1Comp, r2 = input$r2Comp, a11 = input$a11Comp,
-               a21 = input$a21Comp, a22 = input$a22Comp, a12 = input$a12Comp) #named vector of doubles
+               beta = input$betaComp, a22 = input$a22Comp, alpha = input$alphaComp) #named vector of doubles
     
     initialN <- c(input$N01Comp,input$N02Comp)
     
     lvcomp2 <- function(t, n, parms) {
       with(as.list(parms), {
-        dn1dt <- r1 * n[1] * (1 - a11 * n[1] - a12 * n[2])
-        dn2dt <- r2 * n[2] * (1 - a22 * n[2] - a21 * n[1])
+        dn1dt <- r1 * n[1] * (1 - a11 * n[1] - alpha * n[2])
+        dn2dt <- r2 * n[2] * (1 - a22 * n[2] - beta * n[1])
         list(c(dn1dt, dn2dt))
       })
     }
@@ -238,7 +238,7 @@ server <- function(input, output){
       annotate("text", x = input$tLogIn, y = (input$K2Comp - (input$K2Comp)/20 ),
                label = "K2", size = 6, color = "black") +
       theme_bw() +
-      ggtitle("Competição Interespecífica") +
+      ggtitle("Competição Interespec??fica") +
       xlab("t") +
       ylab("N(t)") +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -255,33 +255,50 @@ server <- function(input, output){
   
  #--------- COMPETITION ISOCLINES
   # Uses the same input from the Competition Plot.
-  n4max <- 300
-  n4maxv <- 0:n4max
-  df4 <- data.frame(Nmax = n4maxv) # Uses it to create the appropriatly sized dataframe.
+
+
+    
+ 
  
   Isodf <- reactive({
-    # a11 and a22 aren't given directly by the input, but calculated from K
-    # TODO See how to interchange easily between using K and a values
-    parms <- matrix(c(a11 = input$a11Comp, a12 = input$a12Comp,
-                      a21 = input$a21Comp, a22 = input$a22Comp),
-                    ncol = 2, byrow = T)
+    # Uses it to create the appropriately sized dataframe.
     
-    print(parms)
+    k1 <- input$K1Comp
+    k2 <- input$K2Comp
     
-    N1Iso <- 1/parms[1, 1] - (parms[1, 2]/parms[1, 1]) * n4maxv #would be N2 in the formula
-    N2Iso <- 1/parms[2, 2] - (parms[2, 1]/parms[2, 2]) * n4maxv #would be N1 in the formula
-   
+
+    
+    np <- max(c(k1/input$alphaComp, k2, k2/input$betaComp, k1))
+    print(np)
+    npoints <- 0:np
+
+
+    
+    df4 <- data.frame(Nmax = npoints)
+
+    
+    N1Iso <- input$K1Comp - npoints * input$alphaComp  #would be N2 in the formula
+    N2Iso <- input$K2Comp - npoints * input$betaComp   #would be N1 in the formula
+    #print(N1Iso)
     df4$Iso1 <- N1Iso
     df4$Iso2 <- N2Iso
     
-    df4$color1 <- rep("N1", times = n4max + 1)
-    df4$color2 <- rep("N2", times = n4max + 1)
+    df4$color1 <- rep("N1", times = np + 1)
+    df4$color2 <- rep("N2", times = np + 1)
     
-    #print(df4) #debugging
-    print(head(df4[,1:3])) #prints N1Iso and N2Iso cols
+    xylim <- tail(npoints,1)
+    print(xylim)
+    
+    print(df4) #debugging
+    #print(head(df4[,1:3])) #prints N1Iso and N2Iso cols
+    
     
     df4
   })
+  
+  testlim <- tail(df4$Nmax,1)
+  print("Test:")
+  print(testlim)
 
   # renders the COMPETITION ISOCLINES plot
   output$compIsoPlot<-renderPlot({
@@ -291,13 +308,12 @@ server <- function(input, output){
       geom_line(aes(x = Nmax, y = Iso2,
                     color = color2), #N2 iso
                 size = 1.2) + 
-      ylim(0,200) +
-      xlim(0,200) +
       theme_bw() +
       ggtitle("Isoclinas") +
       xlab("N1") +
       theme_bw() +
       ylab("N2") +
+      xlim(0,xylim) +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
                                       family = "Calibri", face = "bold"),
             axis.title = element_text(size = 20,
@@ -307,9 +323,9 @@ server <- function(input, output){
             legend.text = element_text(size = 16,
                                        family = "Calibri", face = "bold"),
             legend.title = element_blank()
-      ) +
-      annotate("text", label = "K1", x = input$K1Comp + 5, y = 0, size = 6, color = "black") +
-      annotate("text", label = "K1/a", y = (1/input$a11Comp/input$a12Comp), x = 0, size = 6, color = "black")
+      )
+    #  annotate("text", label = "K1", x = input$K1Comp + 5, y = 0, size = 6, color = "black") +
+    #  annotate("text", label = "K1/a", y = (1/input$a11Comp/input$alphaComp), x = 0, size = 6, color = "black")
         
     
     # TODO DEIXAR GRAFICO MAIS BONITO
