@@ -254,26 +254,31 @@ server <- function(input, output){
   })
   
  #--------- COMPETITION ISOCLINES
-  # Uses the same input from the Competition Plot.
+  # Uses the same input from the Competition Plot to generate the correspondent isoclines.
 
-
-    
- 
+  xy <- reactiveValues() # This is used to create reactive values from anywhere that can be accessed
+  # through reactive functions. Ex:
+  # xy$a <- 1 (from anywhere inside the server)
+  # print(xy$a) (from a reactive context)
  
   Isodf <- reactive({
-    # Uses it to create the appropriately sized dataframe.
     
     k1 <- input$K1Comp
     k2 <- input$K2Comp
     
-
+    # xy$lim gets the max number of points any isocline will need (as the greatest value on
+    # either x or y axis and uses it both as the number of points to be calculed by the function
+    # and as the plot area limits.
     
-    np <- max(c(k1/input$alphaComp, k2, k2/input$betaComp, k1))
-    print(np)
-    npoints <- 0:np
-
-
+    xy$lim <- max(c(input$K1Comp/input$alphaComp, input$K2Comp, input$K2Comp/input$betaComp,
+                  input$K1Comp))
+    print("xy test:")
+    print(xy$lim)
     
+    npoints <- 0:xy$lim
+
+
+    # Uses it to create the appropriately sized dataframe.
     df4 <- data.frame(Nmax = npoints)
 
     
@@ -286,20 +291,18 @@ server <- function(input, output){
     df4$color1 <- rep("N1", times = np + 1)
     df4$color2 <- rep("N2", times = np + 1)
     
-    xylim <- tail(npoints,1)
-    print(xylim)
+    #xylim <- tail(npoints,1)
+    #print("xylim:")
+    #print(xylim)
     
-    print(df4) #debugging
+    print(head(df4[,1:3])) 
+    print(tail(df4[,1:3])) 
     #print(head(df4[,1:3])) #prints N1Iso and N2Iso cols
     
     
     df4
   })
   
-  testlim <- tail(df4$Nmax,1)
-  print("Test:")
-  print(testlim)
-
   # renders the COMPETITION ISOCLINES plot
   output$compIsoPlot<-renderPlot({
     ggplot(Isodf(), aes(x = Iso1, y = Nmax,
@@ -313,7 +316,8 @@ server <- function(input, output){
       xlab("N1") +
       theme_bw() +
       ylab("N2") +
-      xlim(0,xylim) +
+      xlim(0,xy$lim) +
+      ylim(0, xy$lim) +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
                                       family = "Calibri", face = "bold"),
             axis.title = element_text(size = 20,
@@ -322,10 +326,14 @@ server <- function(input, output){
                                      family = "Calibri", face = "bold"),
             legend.text = element_text(size = 16,
                                        family = "Calibri", face = "bold"),
-            legend.title = element_blank()
-      )
-    #  annotate("text", label = "K1", x = input$K1Comp + 5, y = 0, size = 6, color = "black") +
-    #  annotate("text", label = "K1/a", y = (1/input$a11Comp/input$alphaComp), x = 0, size = 6, color = "black")
+            legend.title = element_blank(),
+            axis.line.x = element_line(colour = 'black', size = 0.5, linetype='solid')
+      ) #+
+      #annotate("text", label = "K1", x = input$K1Comp + xy$lim/20, y = xy$lim/20, size = 6, color = "red") +
+      #annotate("text", label = "K1/a", y = (input$K1Comp/input$alphaComp), x = xy$lim/20, size = 6, color = "red") +
+      #annotate("text", label = "K2", y = input$K2Comp + xy$lim/20, x = xy$lim/20, size = 6, color = "blue") +
+      #annotate("text", label = "K2/B", x = ( (input$K2Comp/input$betaComp) + xy$lim/20), y = xy$lim/20, size = 6, color = "blue")
+    
         
     
     # TODO DEIXAR GRAFICO MAIS BONITO
