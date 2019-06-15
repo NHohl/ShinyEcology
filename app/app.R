@@ -49,17 +49,14 @@ ui <- fluidPage(
                  sliderInput("N02Comp", "N02",
                                           min = 1, max = 100, value = 50),
                  numericInput("r1Comp", "r1",
-                             min = -5, max = 5, value = 1, step = 0.01),
+                             min = -5, max = 5, value = 0.1, step = 0.01),
                  numericInput("r2Comp", "r2",
                              min = -5, max = 5, value = 0.1, step = 0.01),
                  numericInput("K1Comp", "K1", min = 1, max = 500, value = 100, step = 1),
                  numericInput("K2Comp", "K2", min = 0, max = 3, value = 50, step = 1),
                  numericInput("alphaComp", "alpha", min = 0, max = 3, value = 0.5, step = 0.005),
                  numericInput("betaComp", "beta", min = 0, max = 0.1, value = 0.5, step = 0.005),
-                 numericInput("a11Comp", "a11", min = 0, max = 0.1, value = 0.01, step = 0.005),
-                 numericInput("a22Comp", "a22", min = 0, max = 0.1, value = 0.01, step = 0.005),
-                 sliderInput("tComp", "t",
-                             min = 1, max = 300, value = 100)
+                 sliderInput("tComp", "t", min = 1, max = 300, value = 100)
                  
     ),
     mainPanel(plotOutput("compPlot"))
@@ -71,6 +68,25 @@ ui <- fluidPage(
     sidebarPanel("Usa os mesmos valores do gráfico de competição."),
     mainPanel(plotOutput("compIsoPlot"))
     
+  ),
+  br(),
+  sidebarLayout(
+    sidebarPanel(
+      numericInput("P0Pred", "População inicial de Predadores - P0",
+                   min = 0, max = 1000, value = 10),
+      numericInput("V0Pred", "População inicial de Vítimas - V0",
+                   min = 0, max = 1000, value = 10),
+      numericInput("rPred", "Taxa de cresc. intríns. da vítima - r)",
+                   min = 0, max = 3, value = 1),
+      numericInput("mPred", "Taxa de mortalidade do predador (m ou q)",
+                   min = 0, max = 3, value = 0.2),
+      numericInput("cPred", "Eficiência de captura do predador (c ou alpha)",
+                   min = 0, max = 3, value = 0.5),
+      numericInput("aPred", "Eficiência de conversão do predador (a ou beta)",
+                   min = 0, max = 3, value = 0.6),
+      sliderInput("tPred", "t", min = 0, max = 1000, value = 100)
+    ),
+    mainPanel(plotOutput("predPlot"))
   )
 
 )#end of UI
@@ -134,7 +150,7 @@ server <- function(input, output){
     geom_line(color = "lightsteelblue4") +
     geom_point(colour='lightsteelblue4', size = 3) +
     theme_bw() +
-    ggtitle("Crescimento Exponencial Cont??nuo") +
+    ggtitle("Crescimento Exponencial Contínuo") +
     xlab("t") +
     ylab("N(t)") +
     theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -169,7 +185,7 @@ server <- function(input, output){
       annotate("text", x = input$tLogIn, y = (input$kLogIn - input$kLogIn/20 ),
                label = "K", size = 6, color = "red1") + # o y desce o "K" em 20% do valor para arrumar
       theme_bw() +
-      ggtitle("Crescimento Log??stico") +
+      ggtitle("Crescimento Logístico") +
       xlab("t") +
       ylab("N(t)") +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -184,43 +200,55 @@ server <- function(input, output){
   
   #--------------- INTERESPECIFIC COMPETITION  (with continuous logistic growth)
   #using deSolve package
-  #code taken from A Primer of Ecology With R
-  t3 <- c(0:300)
+  #code modified from A Primer of Ecology With R
+  
+  t3 <- c(0:300) # The fixed maximum value of t. It creates a vector that could hold
+                 #any possible number of points and is then edited according to the input t.
+                 
   df3 <- data.frame(t3)
   
   Compdf <- reactive({
-    df3 <- df3[df3$t3 %in% seq(from=0,to=input$tComp, by=1),]
-    a <- as.vector(df3)
-    #print(df3) #debugging
+    df3 <- df3[df3$t3 %in% seq(from=0,to=input$tComp, by=1),] #adjusts the df size to the input t
+    # (df3 isn't returned in Compdf, but it still serves as a way of filtering
+    # for the input t. Maybe it could be done in a vector instead of df for
+    # performance reasons.
     
-    # a11 and a22 aren't given directly by the input, but calculated from K
-    # TODO See how to interchange easily between using K and a values
-    parms <- c(r1 = input$r1Comp, r2 = input$r2Comp, a11 = input$a11Comp,
-               beta = input$betaComp, a22 = input$a22Comp, alpha = input$alphaComp) #named vector of doubles
+    steps <- as.vector(df3) #used later as the "times" for ode function and to create the color columns
+
+    parms <- c(r1 = input$r1Comp, r2 = input$r2Comp, K1 = input$K1Comp,
+               beta = input$betaComp, K2 = input$K2Comp, alpha = input$alphaComp) #named vector of doubles
     
     initialN <- c(input$N01Comp,input$N02Comp)
     
-    lvcomp2 <- function(t, n, parms) {
+    #From the ode() help:
+    #If func is an R-function, it must be defined as: 
+    #func <- function(t, y, parms,...). t is the current time point in the 
+    #integration, y is the current estimate of the variables in the ODE system.
+    #
+    #Function that'll be used in ode():
+    lv.comp2 <- function(t, n, parms) {
       with(as.list(parms), {
-        dn1dt <- r1 * n[1] * (1 - a11 * n[1] - alpha * n[2])
-        dn2dt <- r2 * n[2] * (1 - a22 * n[2] - beta * n[1])
+        dn1dt <- r1 * n[1] * (1 - 1/K1 * n[1] - alpha * n[2])
+        dn2dt <- r2 * n[2] * (1 - 1/K2 * n[2] - beta * n[1])
         list(c(dn1dt, dn2dt))
       })
+      #n is used in place of y, but it's in the right position so it still works.
+      #n is the vector that holds N1 and N2 values at a given time.
+      #If parms wasn't used as a named list, you'd have to access its values
+      #with parms[1] and so on instead of using their names (K1, K2, etc).
     }
     
-    out <- ode(y = initialN, times = a, func = lvcomp2, parms = parms)
+    # General Solver of Ordinary Differential Equations
+    # ode(y, times, func, parms, [...])
     
-    N1 = rep("N1",length(a))
-    N2 = rep("N2",length(a))
+    out <- ode(y = initialN, times = steps, func = lv.comp2, parms = parms)
     
-    #print(data.frame(out, N1, N2))
+    N1 = rep("N1",length(steps))
+    N2 = rep("N2",length(steps))
+    
     result <- data.frame(out, N1, N2) #N1 and N2 are used by the aes function to colour the lines
-    #print(head(result)) #debugging
+
     result
-    
-    #df3$n3 <- NA
-    #print(df3) #only for debugging
-    #df3
   })
   
   
@@ -228,7 +256,7 @@ server <- function(input, output){
   
   # renders the COMPETITION PLOT
   output$compPlot<-renderPlot({
-    ggplot(Compdf(),aes(x=time,y=X1)) +
+    ggplot(Compdf(),aes(x=time,y=X1)) + #X1 and X2 come from ode() returned values
       geom_point(aes(colour=N1), size = 2) +
       geom_point(size = 2, aes(x = time, y =X2, colour = N2)) +
       geom_hline(yintercept = input$K1Comp, linetype = "dashed", color = "black") +
@@ -238,7 +266,7 @@ server <- function(input, output){
       annotate("text", x = input$tLogIn, y = (input$K2Comp - (input$K2Comp)/20 ),
                label = "K2", size = 6, color = "black") +
       theme_bw() +
-      ggtitle("Competição Interespec??fica") +
+      ggtitle("Competição Interespecífica") +
       xlab("t") +
       ylab("N(t)") +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
@@ -266,40 +294,30 @@ server <- function(input, output){
     k1 <- input$K1Comp
     k2 <- input$K2Comp
     
-    # xy$lim gets the max number of points any isocline will need (as the greatest value on
-    # either x or y axis and uses it both as the number of points to be calculed by the function
-    # and as the plot area limits.
+    # 'xy$lim' gets the max number of points any isocline will need (as the greatest value on
+    # either x or y axis) and is used as both the number of points to be calculed by the function
+    # and the plot area limits.
     
     xy$lim <- max(c(input$K1Comp/input$alphaComp, input$K2Comp, input$K2Comp/input$betaComp,
                   input$K1Comp))
-    print("xy test:")
-    print(xy$lim)
-    
-    npoints <- 0:xy$lim
 
+    npoints <- 0:xy$lim # Creates the vector to be used by the function
 
-    # Uses it to create the appropriately sized dataframe.
-    df4 <- data.frame(Nmax = npoints)
+    df4 <- data.frame(Nmax = npoints) # Creates the appropriately sized dataframe
 
-    
-    N1Iso <- input$K1Comp - npoints * input$alphaComp  #would be N2 in the formula
-    N2Iso <- input$K2Comp - npoints * input$betaComp   #would be N1 in the formula
-    #print(N1Iso)
+    N1Iso <- input$K1Comp - npoints * input$alphaComp  # npoints would be N2 in the formula
+    N2Iso <- input$K2Comp - npoints * input$betaComp   # npoints would be N1 in the formula
+
     df4$Iso1 <- N1Iso
     df4$Iso2 <- N2Iso
     
+    np <- xy$lim
     df4$color1 <- rep("N1", times = np + 1)
     df4$color2 <- rep("N2", times = np + 1)
     
-    #xylim <- tail(npoints,1)
-    #print("xylim:")
-    #print(xylim)
-    
-    print(head(df4[,1:3])) 
-    print(tail(df4[,1:3])) 
-    #print(head(df4[,1:3])) #prints N1Iso and N2Iso cols
-    
-    
+    #print(head(df4[,1:3],3)) 
+    #print(tail(df4[,1:3],3)) 
+
     df4
   })
   
@@ -307,10 +325,10 @@ server <- function(input, output){
   output$compIsoPlot<-renderPlot({
     ggplot(Isodf(), aes(x = Iso1, y = Nmax,
                         color = color1)) + #N1 iso
-      geom_line(size = 1.2) +
+      geom_line(size = 0.8) +
       geom_line(aes(x = Nmax, y = Iso2,
                     color = color2), #N2 iso
-                size = 1.2) + 
+                size = 0.8) + 
       theme_bw() +
       ggtitle("Isoclinas") +
       xlab("N1") +
@@ -326,22 +344,84 @@ server <- function(input, output){
                                      family = "Calibri", face = "bold"),
             legend.text = element_text(size = 16,
                                        family = "Calibri", face = "bold"),
-            legend.title = element_blank(),
-            axis.line.x = element_line(colour = 'black', size = 0.5, linetype='solid')
+            legend.title = element_blank()
+            #axis.line.x = element_line(colour = 'black', size = 0.5, linetype='solid')
       ) #+
       #annotate("text", label = "K1", x = input$K1Comp + xy$lim/20, y = xy$lim/20, size = 6, color = "red") +
       #annotate("text", label = "K1/a", y = (input$K1Comp/input$alphaComp), x = xy$lim/20, size = 6, color = "red") +
       #annotate("text", label = "K2", y = input$K2Comp + xy$lim/20, x = xy$lim/20, size = 6, color = "blue") +
       #annotate("text", label = "K2/B", x = ( (input$K2Comp/input$betaComp) + xy$lim/20), y = xy$lim/20, size = 6, color = "blue")
     
-        
-    
-    # TODO DEIXAR GRAFICO MAIS BONITO
-    # COLOCAR ETIQUETAS NAS ISOCLINAS
-    # MUDAR OS VALORES NOS EIXOS
-    # MARCAR O PONTO DE EQUILIBRIO
+      # MARCAR O PONTO DE EQUILIBRIO
     
   })
+  
+  t5 <- c(0:300) # The fixed maximum value of t. It creates a vector that could hold
+  #any possible number of points and is then edited according to the input t.
+  
+  df5 <- data.frame(t5)
+  
+  Pred.df <- reactive({
+    df5 <- df5[df5$t5 %in% seq(from=0,to=input$tPred, by=1),] #adjusts the df size to the input t
+    
+    steps <- as.vector(df5) #used later as the "times" for ode function and to create the color columns through repetition
+    
+    parms <- c(r = input$rPred, V = input$V0Pred, c = input$cPred,
+               m = input$mPred, P = input$P0Pred, a = input$aPred)
+    initialN <- c(input$V0Pred,input$P0Pred)
+    
+    # See comments on Competition for help.
+    lv.pred <- function(t, n, parms) {
+      with(as.list(parms), {
+        dV.dt <- r * n[1] - c * n[1] * n[2]
+        dP.dt <- a * c * n[1] * n[2] - m * n[2]
+        list(c(dV.dt, dP.dt))
+      })
+    }
+    
+    # General Solver of Ordinary Differential Equations
+    # ode(y, times, func, parms, [...]) See Competition for more.
+    
+    out <- ode(y = initialN, times = steps, func = lv.pred, parms = parms)
+    
+    V = rep("V",length(steps)) #used in plot legend and colors
+    P = rep("P",length(steps))
+    
+    result <- data.frame(out, V, P) #V and P are used by the aes function to color 
+    #the lines.
+    
+    print(head(result, 3))
+    print(tail(result, 3))
+    result
+  })
+  
+  # ------- Predation N(t) plot
+  
+  output$predPlot <- renderPlot({
+    ggplot(data = Pred.df()) +
+      geom_point(aes(x = time, y = X1, color = V), size = 2) +
+      geom_line(aes(x = time, y = X1, color = V), size = 0.5) +
+      geom_point(aes(x = time, y = X2, color = P), size = 2) +
+      geom_line(aes(x = time, y = X2, color = P), size = 0.5) +
+      theme_bw() +
+      ggtitle("Predador x Presa") +
+      xlab("t") +
+      theme_bw() +
+      ylab("P e N") +
+      theme(plot.title = element_text(size = 24, hjust = 0.5,
+                                      family = "Calibri", face = "bold"),
+            axis.title = element_text(size = 20,
+                                      family = "Calibri", face = "bold"),
+            axis.text = element_text(size = 16,
+                                     family = "Calibri", face = "bold"),
+            legend.text = element_text(size = 16,
+                                       family = "Calibri", face = "bold"),
+            legend.title = element_blank(),
+            axis.line.x = element_line(colour = 'black', size = 0.5, linetype='solid')
+      )
+  })
+  
+
   
 
   
