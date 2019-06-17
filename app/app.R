@@ -59,34 +59,43 @@ ui <- fluidPage(
                  sliderInput("tComp", "t", min = 1, max = 300, value = 100)
                  
     ),
-    mainPanel(plotOutput("compPlot"))
+    mainPanel(plotOutput("compPlot"),
+              br(),
+              plotOutput("compIsoPlot")
+              )
 
   ),
   
   br(),
   sidebarLayout(
-    sidebarPanel("Usa os mesmos valores do gráfico de competição."),
-    mainPanel(plotOutput("compIsoPlot"))
-    
-  ),
-  br(),
-  sidebarLayout(
     sidebarPanel(
-      numericInput("P0Pred", "População inicial de Predadores - P0",
-                   min = 0, max = 1000, value = 10),
-      numericInput("V0Pred", "População inicial de Vítimas - V0",
-                   min = 0, max = 1000, value = 10),
+      numericInput("P0Pred", "População inicial de Predadores - P0\n 
+                   (milhares de indivíduos)",
+                   min = 0, max = 100, value = 0.9, step = 0.1),
+      numericInput("V0Pred", "População inicial de Vítimas - V0\n 
+                   (milhares de indivíduos)",
+                   min = 0, max = 100, value = 0.9, step = 0.1),
       numericInput("rPred", "Taxa de cresc. intríns. da vítima - r)",
-                   min = 0, max = 3, value = 1),
+                   min = 0, max = 3, value = 0.6, step = 0.1),
       numericInput("mPred", "Taxa de mortalidade do predador (m ou q)",
-                   min = 0, max = 3, value = 0.2),
+                   min = 0, max = 3, value = 1, step = 0.1),
       numericInput("cPred", "Eficiência de captura do predador (c ou alpha)",
-                   min = 0, max = 3, value = 0.5),
+                   min = 0, max = 3, value = 0.5, step = 0.1),
       numericInput("aPred", "Eficiência de conversão do predador (a ou beta)",
-                   min = 0, max = 3, value = 0.6),
-      sliderInput("tPred", "t", min = 0, max = 1000, value = 100)
+                   min = 0, max = 3, value = 0.8, step = 0.1),
+      numericInput("tPred", "t (de 0 a 1000)", min = 0, max = 1000, value = 50)
     ),
-    mainPanel(plotOutput("predPlot"))
+    mainPanel(plotOutput("predPlot"),
+              br(),
+              h4("Repare que o modelo pode gerar populações negativas\n
+                 ou em valores decimais muito baixos, o que não se reflete\n
+                 na realidade.\n
+                 Utilizar \"milhares de indivíduos\" como unidade reduz o problema."),
+              h4("Aviso: Utilizar valores que gerem P ou V muito grandes (sejam \n
+                 positivos ou negativos) fará o gráfico parar de funcionar."),
+              br(),
+              plotOutput("predIsoPlot")
+    )
   )
 
 )#end of UI
@@ -356,7 +365,7 @@ server <- function(input, output){
     
   })
   
-  t5 <- c(0:300) # The fixed maximum value of t. It creates a vector that could hold
+  t5 <- c(0:1000) # The fixed maximum value of t. It creates a vector that could hold
   #any possible number of points and is then edited according to the input t.
   
   df5 <- data.frame(t5)
@@ -365,7 +374,8 @@ server <- function(input, output){
     df5 <- df5[df5$t5 %in% seq(from=0,to=input$tPred, by=1),] #adjusts the df size to the input t
     
     steps <- as.vector(df5) #used later as the "times" for ode function and to create the color columns through repetition
-    
+    #print("steps:")
+    #print(steps)
     parms <- c(r = input$rPred, V = input$V0Pred, c = input$cPred,
                m = input$mPred, P = input$P0Pred, a = input$aPred)
     initialN <- c(input$V0Pred,input$P0Pred)
@@ -392,7 +402,16 @@ server <- function(input, output){
     
     print(head(result, 3))
     print(tail(result, 3))
+    
     result
+  })
+  
+  predIsodf <- reactive({
+    isoV <- input$mPred / input$aPred * input$cPred
+    isoP <- input$rPred / input$cPred
+    df <- data.frame(isoV, isoP)
+    print(df)
+    df
   })
   
   # ------- Predation N(t) plot
@@ -407,7 +426,7 @@ server <- function(input, output){
       ggtitle("Predador x Presa") +
       xlab("t") +
       theme_bw() +
-      ylab("P e N") +
+      ylab("Tamanho das Populações de P e V\n (milhares de indivíduos)") +
       theme(plot.title = element_text(size = 24, hjust = 0.5,
                                       family = "Calibri", face = "bold"),
             axis.title = element_text(size = 20,
@@ -416,13 +435,36 @@ server <- function(input, output){
                                      family = "Calibri", face = "bold"),
             legend.text = element_text(size = 16,
                                        family = "Calibri", face = "bold"),
-            legend.title = element_blank(),
-            axis.line.x = element_line(colour = 'black', size = 0.5, linetype='solid')
-      )
+            legend.title = element_blank()
+            )
   })
   
+  # Phase Space Plot (Predation x Prey)
+  output$predIsoPlot <- renderPlot({
+    ggplot() +
+      geom_hline(data = predIsodf(), aes(yintercept = isoV)) +
+      geom_vline(data = predIsodf(), aes(xintercept = isoP)) +
+      geom_point(data = Pred.df(), aes(x = X1, y = X2),
+                 color = c("lightsteelblue4"), alpha = 0.4, size = 3) +
+      geom_path(data = Pred.df(), aes(x = X1, y = X2),
+                color = "lightsteelblue4", alpha = 0.6) +
+      theme_bw() +
+      ggtitle("Espaço de Fase") +
+      xlab("Pop. de Presas (V)") +
+      ylab("Pop. de Predadores (P)") +
+      theme(plot.title = element_text(size = 24, hjust = 0.5,
+                                      family = "Calibri", face = "bold"),
+            axis.title = element_text(size = 20,
+                                      family = "Calibri", face = "bold"),
+            axis.text = element_text(size = 16,
+                                     family = "Calibri", face = "bold"),            legend.text = element_text(size = 16,
+                                       family = "Calibri", face = "bold"),
+            legend.title = element_blank()
+      )
+    
+    
+  })
 
-  
 
   
 #----------------------------------------------------------------------
