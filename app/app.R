@@ -148,8 +148,7 @@ server <- function(input, output){
   
   expGdf <- reactive({
     df1 <- df1[df1$t1 %in% seq(from=0,to=input$tExpIn,by=1),]
-    df1$N1 <-  input$N0ExpIn * exp((input$rExpIn * df1$t1)) #exp(r*t1) = e^(rt)
-    #print(df1) #only for debugging
+    df1$N1 <-  input$N0ExpIn * exp((input$rExpIn * df1$t1)) #exp(r*t) = e^(rt)
     df1
   })
 
@@ -374,8 +373,7 @@ server <- function(input, output){
     df5 <- df5[df5$t5 %in% seq(from=0,to=input$tPred, by=1),] #adjusts the df size to the input t
     
     steps <- as.vector(df5) #used later as the "times" for ode function and to create the color columns through repetition
-    #print("steps:")
-    #print(steps)
+    
     parms <- c(r = input$rPred, V = input$V0Pred, c = input$cPred,
                m = input$mPred, P = input$P0Pred, a = input$aPred)
     initialN <- c(input$V0Pred,input$P0Pred)
@@ -407,8 +405,8 @@ server <- function(input, output){
   })
   
   predIsodf <- reactive({
-    isoV <- input$mPred / input$aPred * input$cPred
-    isoP <- input$rPred / input$cPred
+    isoP <- input$mPred / (input$aPred * input$cPred)
+    isoV <- input$rPred / input$cPred
     df <- data.frame(isoV, isoP)
     print(df)
     df
