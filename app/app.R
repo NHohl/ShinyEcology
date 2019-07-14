@@ -26,7 +26,7 @@ ui <- fluidPage(
                            min = -3, max = 3, value = 0.1, step = 0.01),
                sliderInput("tExpIn", "t",
                            min = 0, max = 100, value = 50)),
-    mainPanel(plotOutput("expGPlot")) #default is expGPlot
+    mainPanel(plotOutput("expGPlot")) 
   ),
   
   br(),
@@ -39,7 +39,7 @@ ui <- fluidPage(
                              min = 0, max = 100, value = 80),
                  sliderInput("kLogIn", "K", min = 0, max = 100, value = 50)
                  ),
-    mainPanel(plotOutput("logGPlot")) #default is logGPlot
+    mainPanel(plotOutput("logGPlot"))
   ),
   
   br(),
@@ -87,12 +87,12 @@ ui <- fluidPage(
     ),
     mainPanel(plotOutput("predPlot"),
               br(),
-              h4("Repare que o modelo pode gerar populações negativas\n
-                 ou em valores decimais muito baixos, o que não se reflete\n
-                 na realidade.\n
-                 Utilizar \"milhares de indivíduos\" como unidade reduz o problema."),
+              h4("O modelo pode gerar populações em valores decimais, o que não reflete\n
+                 a realidade.\n
+                 Utilizar \"milhares de indivíduos\" como unidade reduz o conflito."),
               h4("Aviso: Utilizar valores que gerem P ou V muito grandes (sejam \n
-                 positivos ou negativos) fará o gráfico parar de funcionar."),
+                 positivos ou negativos) fará o gráfico parar de funcionar por exceder \n
+                 a capacidade do computador."),
               br(),
               plotOutput("predIsoPlot")
     )
@@ -112,11 +112,10 @@ server <- function(input, output){
   
   geoGdf <- reactive({
     df <- df[df$t %in% seq(from = 0, to = input$tGeoIn, by = 1),] # Filters for the
-    # actual input.
+    #actual input.
     df$n <- input$N0GeoIn * (1 + input$RGeoIn) ^ df$t
     #print(df) #for debugging
     df
-    #note: the minimum possible R value in real life is -1
   })
   
   #renders the GEOMETRIC GROWTH plot
@@ -211,15 +210,15 @@ server <- function(input, output){
   #code modified from A Primer of Ecology With R
   
   t3 <- c(0:300) # The fixed maximum value of t. It creates a vector that could hold
-                 #any possible number of points and is then edited according to the input t.
+                 #any possible number of points and is then edited according to input t.
                  
   df3 <- data.frame(t3)
   
   Compdf <- reactive({
-    df3 <- df3[df3$t3 %in% seq(from=0,to=input$tComp, by=1),] #adjusts the df size to the input t
+    df3 <- df3[df3$t3 %in% seq(from=0,to=input$tComp, by=1),] #adjusts the df size to input t
     # (df3 isn't returned in Compdf, but it still serves as a way of filtering
-    # for the input t. Maybe it could be done in a vector instead of df for
-    # performance reasons.
+    # for the requested t. Maybe it could be done in a vector instead of df for
+    # performance reasons, but this is the best current solution.)
     
     steps <- as.vector(df3) #used later as the "times" for ode function and to create the color columns
 
@@ -236,20 +235,23 @@ server <- function(input, output){
     #Function that'll be used in ode():
     lv.comp2 <- function(t, n, parms) {
       with(as.list(parms), {
-        dn1dt <- r1 * n[1] * (1 - 1/K1 * n[1] - alpha * n[2])
-        dn2dt <- r2 * n[2] * (1 - 1/K2 * n[2] - beta * n[1])
+        dn1dt <- r1 * n[1] * (1 - n[1]/K1 - (alpha * n[2]/K1) )
+        dn2dt <- r2 * n[2] * (1 - n[2]/K2 - (beta * n[2]/K2) )
         list(c(dn1dt, dn2dt))
       })
       #n is used in place of y, but it's in the right position so it still works.
       #n is the vector that holds N1 and N2 values at a given time.
       #If parms wasn't used as a named list, you'd have to access its values
-      #with parms[1] and so on instead of using their names (K1, K2, etc).
+      #with parms[1] and so on instead of using their names (K1, K2, etc), so the
+      #"with" is needed.
     }
     
     # General Solver of Ordinary Differential Equations
     # ode(y, times, func, parms, [...])
     
     out <- ode(y = initialN, times = steps, func = lv.comp2, parms = parms)
+    
+    print(out)
     
     N1 = rep("N1",length(steps))
     N2 = rep("N2",length(steps))
@@ -363,6 +365,9 @@ server <- function(input, output){
       # MARCAR O PONTO DE EQUILIBRIO
     
   })
+  
+  
+  # PREDATION x PREY MODEL ----------------------
   
   t5 <- c(0:1000) # The fixed maximum value of t. It creates a vector that could hold
   #any possible number of points and is then edited according to the input t.
