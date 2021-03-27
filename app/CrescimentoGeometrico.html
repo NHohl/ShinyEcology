@@ -1,0 +1,40 @@
+<h2>Crescimento Geométrico (Discreto ou em passos)</h2>
+
+<h3>Premissas</h3>
+
+<ul>
+<li>Não há recursos limitantes para o crescimento da população</li>
+<li>As taxas de natalidade e mortalidade não variam</li>
+<li>Todos os indivíduos podem se reproduzir com todos os outros</li>
+<li>Todas as reproduções ocorrem em momentos específicos do tempo (sejam dias, estações, anos etc) e ocorrem de uma vez a cada passo de tempo</li>
+</ul>
+
+<h3>Termos</h3>
+
+<p><strong>B</strong> -> taxa de natalidade per capita</p>
+
+<p><strong>D</strong> -> taxa de mortalidade per capta</p>
+
+<p><strong>B</strong>-<strong>D</strong> = <strong>R</strong> -> taxa de crescimento finita</p>
+
+<h3>Exemplo</h3>
+
+<p>A cada passo de tempo nascem 1 indivíduo a cada indivíduo na população e morrem 0,5 indivíduos por cada indivíduo na população.</p>
+
+<p><strong>B</strong> = 1 e <strong>D</strong> = 0,5</p>
+
+<p><strong>R</strong> = 0,5 -> quantos indivíduos serão acrescidos à população por cada indivíduos já existente a cada passo de tempo</p>
+
+<p><strong>R</strong> = 0,5 significa que a população cresce 50% a cada passo e para obter esse valor precisamos multiplicar o N por (1,5)</p>
+
+<p>Esse novo valor (<strong>1 + R</strong>) pode ser multiplicado pelo número de indivíduos para saber quantos existirão no próximo passo de tempo.</p>
+
+<p>Chamamos (<strong>1+R</strong>) de <strong>λ</strong> (<strong>lambda</strong>) e temos que:</p>
+
+<p><strong>Nt+1 = Nt * λ</strong></p>
+
+<p>Como as taxas de natalidade e mortalidade per capita (<strong>B</strong> e <strong>D</strong>) permanecem constantes, <strong>R</strong> (<strong>taxa de crescimento finita</strong>) também permanece.</p>
+
+<p>Então para cada passo no tempo, basta multiplicar a população por <strong>lambda</strong> (<strong>1+R</strong>) novamente.</p>
+
+<p><strong>Nt = N0 * λt</strong></p>
