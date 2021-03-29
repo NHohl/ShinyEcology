@@ -52,19 +52,19 @@ ui <- fluidPage(
   )),
   
   tabPanel(title = "Competição", sidebarLayout(
-    sidebarPanel(sliderInput("N01Comp", "N01",
-                             min = 1, max = 100, value = 50),
-                 sliderInput("N02Comp", "N02",
-                                          min = 1, max = 100, value = 50),
+    sidebarPanel(numericInput("N01Comp", "N01",
+                             min = 1, max = 3000, value = 50, step = 1),
+                 numericInput("N02Comp", "N02",
+                                          min = 1, max = 3000, value = 50, step = 1),
                  numericInput("r1Comp", "r1",
-                             min = -5, max = 5, value = 0.1, step = 0.01),
+                             min = -5, max = 5, value = 0.5, step = 0.01),
                  numericInput("r2Comp", "r2",
-                             min = -5, max = 5, value = 0.1, step = 0.01),
-                 numericInput("K1Comp", "K1", min = 1, max = 500, value = 100, step = 1),
-                 numericInput("K2Comp", "K2", min = 0, max = 3, value = 50, step = 1),
-                 numericInput("alphaComp", "alpha", min = 0, max = 3, value = 0.5, step = 0.005),
-                 numericInput("betaComp", "beta", min = 0, max = 0.1, value = 0.5, step = 0.005),
-                 sliderInput("tComp", "t", min = 1, max = 300, value = 100),
+                             min = -5, max = 5, value = 0.5, step = 0.01),
+                 numericInput("K1Comp", "K1", min = 1, max = 1000, value = 100, step = 1),
+                 numericInput("K2Comp", "K2", min = 0, max = 1000, value = 50, step = 1),
+                 numericInput("alphaComp", "alpha", min = 0, max = 100, value = 0.5, step = 0.005),
+                 numericInput("betaComp", "beta", min = 0, max = 100, value = 0.5, step = 0.005),
+                 sliderInput("tComp", "t", min = 1, max = 1000, value = 100),
                  br(),
                  h4(textOutput("compOut1")),
                  h4(textOutput("compOut2"))
@@ -81,20 +81,20 @@ ui <- fluidPage(
     sidebarPanel(
       numericInput("P0Pred", "População inicial de Predadores - P0\n 
                    (milhares de indivíduos)",
-                   min = 0, max = 100, value = 5, step = 0.1),
+                   min = 0, max = 1000, value = 200, step = 0.1),
       numericInput("V0Pred", "População inicial de Vítimas - V0\n 
                    (milhares de indivíduos)",
-                   min = 0, max = 100, value = 25, step = 0.1),
+                   min = 0, max = 1000, value = 600, step = 0.1),
       numericInput("rPred", "Taxa de cresc. intríns. da vítima - r)",
-                   min = 0, max = 3, value = 0.5, step = 0.1),
-      numericInput("cPred", "Eficência de captura do predador (c ou alpha)",
-                   min = 0, max = 3, value = 0.01, step = 0.01),
-      numericInput("aPred", "Eficência de conversão do predador (a ou beta)",
                    min = 0, max = 3, value = 0.1, step = 0.1),
+      numericInput("cPred", "Eficência de captura do predador (c ou alpha)",
+                   min = 0, max = 3, value = 0.001, step = 0.01),
+      numericInput("aPred", "Eficência de conversão do predador (a ou beta)",
+                   min = 0, max = 3, value = 0.001, step = 0.1),
       numericInput("mPred", "Taxa de mortalidade do predador (m ou q)",
-                   min = 0, max = 3, value = 0.2, step = 0.1),
+                   min = 0, max = 3, value = 0.5, step = 0.1),
       numericInput("tPred", "t (de 0 a 1000)", 
-                   min = 0, max = 1000, value = 50),
+                   min = 0, max = 1000, value = 100),
       br(),
       h4(textOutput("predOut1")),
       h4(textOutput("predOut2"))
@@ -170,7 +170,7 @@ server <- function(input, output){
   
   output$expOut <- renderText({
     
-    Nt <- tail(expGdf()$N1, n = 1)
+    Nt <- tail(expGdf()$Nt, n = 1)
     paste0("N(t) = ", Nt)
     
   })
@@ -254,8 +254,8 @@ server <- function(input, output){
       
       with(as.list(parms), {
         
-        dn1dt <- r1 * n[1] * (1 - n[1]/K1 - (alpha * n[2]/K1) )
-        dn2dt <- r2 * n[2] * (1 - n[2]/K2 - (beta * n[2]/K2) )
+        dn1dt <- r1 * n[1] * ((K1 - n[1] - alpha * n[2]) / K1)
+        dn2dt <- r2 * n[2] * ((K2 - n[2] - beta * n[1]) / K2)
         list(c(dn1dt, dn2dt))
         
       })
@@ -264,11 +264,12 @@ server <- function(input, output){
 
     
     out <- ode(y = initialN, times = steps, func = lv.comp2, parms = parms)
-    
+    print(out)
     N1 = rep("N1",length(steps))
     N2 = rep("N2",length(steps))
     
     result <- data.frame(out, N1, N2) #N1 and N2 are used by the aes function to color the lines
+    print(tail(result))
     result
   })
   
@@ -278,8 +279,8 @@ server <- function(input, output){
   # renders the COMPETITION PLOT
   output$compPlot<-renderPlot({
     ggplot(Compdf(),aes(x=time,y=X1)) + #X1 and X2 come from ode() returned values
-      geom_point(aes(colour=N1), size = 2) +
-      geom_point(size = 2, aes(x = time, y =X2, colour = N2)) +
+      geom_point(aes(x = time, y = X1, colour=N1), size = 2) +
+      geom_point(size = 2, aes(x = time, y = X2, colour = N2)) +
       geom_hline(yintercept = input$K1Comp, linetype = "dashed", color = "black") +
       annotate("text", x = input$tLogIn, y = (input$K1Comp - (input$K1Comp)/20 ),
                label = "K1", size = 6, color = "black") +
@@ -363,7 +364,8 @@ server <- function(input, output){
     ggplot(Iso1data(), aes(x = n1, y = n2)) + #N1 iso
       geom_line(size = 0.8, color = "#F8766D") + # hard coded the default ggplot color, since they're plotted from different dataframes
       geom_line(data = Iso2data(), aes(x = n1, y = n2), #N2 iso
-                size = 0.8, color = "#00BFC4") + 
+                size = 0.8, color = "#00BFC4") +
+      geom_point(x = input$N01Comp, y = input$N02Comp)+
       theme_bw() +
       ggtitle("Isoclinas") +
       xlab("N1") +
@@ -399,7 +401,10 @@ server <- function(input, output){
     lv.pred <- function(t, n, parms) {
       with(as.list(parms), {
         dV.dt <- r * n[1] - c * n[1] * n[2]
-        dP.dt <- a * c * n[1] * n[2] - m * n[2]
+    
+        
+        dP.dt <- a * n[1] * n[2] - m * n[2]
+        
         list(c(dV.dt, dP.dt))
       })
     }
@@ -415,8 +420,8 @@ server <- function(input, output){
     result <- data.frame(out, V, P) #V and P are used by the aes function to color 
     #the lines.
     
-    #print(head(result, 3))
-    #print(tail(result, 3))
+    print(head(result, 3))
+    print(tail(result, 3))
     result
   })
   
@@ -440,8 +445,9 @@ server <- function(input, output){
     r <- input$rPred
     c <- input$cPred
     
-    isoP <- m / (a * c) 
-    isoV <- r / c 
+    isoP <- r / c
+
+    isoV <- m / a
     
     df <- data.frame(isoV, isoP)
     df
@@ -471,8 +477,8 @@ server <- function(input, output){
   # Phase Space Plot (Predation x Prey) with isoclines
   output$predIsoPlot <- renderPlot({
     ggplot() +
-      geom_hline(data = predIsodf(), aes(yintercept = isoV)) +
-      geom_vline(data = predIsodf(), aes(xintercept = isoP)) +
+      geom_vline(data = predIsodf(), aes(xintercept = isoV)) +
+      geom_hline(data = predIsodf(), aes(yintercept = isoP)) +
       geom_point(data = Pred.df(), aes(x = X1, y = X2),
                  color = c("lightsteelblue4"), alpha = 0.4, size = 3) +
       geom_path(data = Pred.df(), aes(x = X1, y = X2),
