@@ -63,7 +63,7 @@ ui <- fluidPage(
                  numericInput("K1Comp", "K1", min = 1, max = 1000, value = 100, step = 1),
                  numericInput("K2Comp", "K2", min = 0, max = 1000, value = 50, step = 1),
                  numericInput("alphaComp", "alpha", min = 0, max = 100, value = 0.5, step = 0.005),
-                 numericInput("betaComp", "beta", min = 0, max = 100, value = 0.5, step = 0.005),
+                 numericInput("betaComp", "beta", min = 0, max = 100, value = 0.3, step = 0.005),
                  sliderInput("tComp", "t", min = 1, max = 1000, value = 100),
                  br(),
                  h4(textOutput("compOut1")),
@@ -140,10 +140,12 @@ server <- function(input, output){
     ggplot(geoGdf(), aes(x = t, y = n)) +
     geom_line(linetype = "dashed") +
     geom_point(colour='lightsteelblue4', size = 3) +
-    theme_bw() +
     ggtitle("Crescimento Geométrico (Em Passos)") +
     xlab("t") +
     ylab("N(t)") +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.line = element_line(colour = "black")) +
     theme(plot.title = element_text(size = 24, hjust = 0.5, face = "bold"),
             axis.title = element_text(size = 20, face = "bold"),
             axis.text = element_text(size = 16, face = "bold")
@@ -180,10 +182,12 @@ server <- function(input, output){
     ggplot(expGdf(),aes(x = t, y = Nt)) +
     geom_line(color = "lightsteelblue4") +
     geom_point(colour='lightsteelblue4', size = 3) +
-    theme_bw() +
     ggtitle("Crescimento Exponencial Contínuo") +
     xlab("t") +
     ylab("N(t)") +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.line = element_line(colour = "black")) +
     theme(plot.title = element_text(size = 24, hjust = 0.5, face = "bold"),
           axis.title = element_text(size = 20, face = "bold"),
           axis.text = element_text(size = 16, face = "bold")
@@ -217,13 +221,15 @@ server <- function(input, output){
   output$logGPlot<-renderPlot({
     ggplot(logGdf(),aes(x=t,y=Nt)) +
       geom_point(colour='lightsteelblue4', size = 3) +
-      geom_hline(yintercept = input$kLogIn, linetype = "dashed", color = "red1") +
+      geom_hline(yintercept = input$kLogIn, linetype = "dashed") +
       annotate("text", x = input$tLogIn, y = (input$kLogIn - input$kLogIn/20 ),
-               label = "K", size = 6, color = "red1") + # y moves K to improve legibility
-      theme_bw() +
+               label = "K", size = 6) + # y moves K to improve legibility
       ggtitle("Crescimento Logístico") +
       xlab("t") +
       ylab("N(t)") +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.line = element_line(colour = "black")) +
       theme(plot.title = element_text(size = 24, hjust = 0.5, face = "bold"),
             axis.title = element_text(size = 20, face = "bold"),
             axis.text = element_text(size = 16, face = "bold")
@@ -281,13 +287,16 @@ server <- function(input, output){
     ggplot(Compdf(),aes(x=time,y=X1)) + #X1 and X2 come from ode() returned values
       geom_point(aes(x = time, y = X1, colour=N1), size = 2) +
       geom_point(size = 2, aes(x = time, y = X2, colour = N2)) +
+      expand_limits(x = 0, y = 0) + #forces the plot origin to be 0,0
       geom_hline(yintercept = input$K1Comp, linetype = "dashed", color = "black") +
       annotate("text", x = input$tLogIn, y = (input$K1Comp - (input$K1Comp)/20 ),
                label = "K1", size = 6, color = "black") +
       geom_hline(yintercept = input$K2Comp, linetype = "dashed", color = "black") +
       annotate("text", x = input$tLogIn, y = (input$K2Comp - (input$K2Comp)/20 ),
                label = "K2", size = 6, color = "black") +
-      theme_bw() +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.line = element_line(colour = "black")) +
       ggtitle("Competição Interespecífica") +
       xlab("t") +
       ylab("N(t)") +
@@ -365,11 +374,13 @@ server <- function(input, output){
       geom_line(size = 0.8, color = "#F8766D") + # hard coded the default ggplot color, since they're plotted from different dataframes
       geom_line(data = Iso2data(), aes(x = n1, y = n2), #N2 iso
                 size = 0.8, color = "#00BFC4") +
-      geom_point(x = input$N01Comp, y = input$N02Comp)+
-      theme_bw() +
+      expand_limits(x = 0, y = 0) + #forces the plot origin to be 0,0
+      geom_point(x = input$N01Comp, y = input$N02Comp, size = 3) +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.line = element_line(colour = "black")) +
       ggtitle("Isoclinas") +
       xlab("N1") +
-      theme_bw() +
       ylab("N2") +
       xlim(0,xy$lim) +
       ylim(0, xy$lim) +
@@ -461,11 +472,12 @@ server <- function(input, output){
       geom_line(aes(x = time, y = X1, color = V), size = 0.5) +
       geom_point(aes(x = time, y = X2, color = P), size = 2) +
       geom_line(aes(x = time, y = X2, color = P), size = 0.5) +
-      theme_bw() +
       ggtitle("Predador x Presa") +
       xlab("t") +
-      theme_bw() +
       ylab("Tamanho das Populações de P e V\n") +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.line = element_line(colour = "black")) +
       theme(plot.title = element_text(size = 24, hjust = 0.5, face = "bold"),
             axis.title = element_text(size = 20, face = "bold"),
             axis.text = element_text(size = 16, face = "bold"),
@@ -483,10 +495,12 @@ server <- function(input, output){
                  color = c("lightsteelblue4"), alpha = 0.4, size = 3) +
       geom_path(data = Pred.df(), aes(x = X1, y = X2),
                 color = "lightsteelblue4", alpha = 0.6) +
-      theme_bw() +
       ggtitle("Espaço de Fase") +
       xlab("Pop. de Presas (V)") +
       ylab("Pop. de Predadores (P)") +
+      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.line = element_line(colour = "black")) +
       theme(plot.title = element_text(size = 24, hjust = 0.5, face = "bold"),
             axis.title = element_text(size = 20, face = "bold"),
             axis.text = element_text(size = 16, face = "bold"),
