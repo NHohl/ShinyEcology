@@ -20,8 +20,7 @@ ui <- fluidPage(
                  h4(textOutput("geoOut"))
                  ),
     mainPanel(plotOutput("geoGplot"),
-    includeHTML("CrescimentoGeometrico.html"),
-    br()
+    includeHTML("CrescimentoGeometrico.html")
     )
     )),
   
@@ -72,7 +71,8 @@ ui <- fluidPage(
     ),
     mainPanel(plotOutput("compPlot"),
               br(),
-              plotOutput("compIsoPlot")
+              plotOutput("compIsoPlot"),
+              includeHTML("Competicao.html")
               ),
 
   )),
