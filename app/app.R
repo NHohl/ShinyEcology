@@ -33,7 +33,9 @@ ui <- fluidPage(
                              min = 0, max = 100, value = 50),
                  h4(textOutput("expOut")), h4(textOutput("expDoublingTime")
                  )),
-    mainPanel(plotOutput("expGPlot"))) 
+    mainPanel(plotOutput("expGPlot"),
+              br(),
+              includeHTML("CrescimentoExponencial.html"))) 
   ),
   
   tabPanel(title = "Logístico", sidebarLayout(
@@ -47,7 +49,9 @@ ui <- fluidPage(
                  br(),
                  h4(textOutput("logOut"))
                  ),
-    mainPanel(plotOutput("logGPlot"))
+    mainPanel(plotOutput("logGPlot"),
+              br(),
+              includeHTML("Logistico.html"),)
   )),
   
   tabPanel(title = "Competição", sidebarLayout(
@@ -72,6 +76,7 @@ ui <- fluidPage(
     mainPanel(plotOutput("compPlot"),
               br(),
               plotOutput("compIsoPlot"),
+              br(),
               includeHTML("Competicao.html")
               ),
 
@@ -101,7 +106,10 @@ ui <- fluidPage(
     ),
     mainPanel(plotOutput("predPlot"),
               br(),
-              plotOutput("predIsoPlot")
+              plotOutput("predIsoPlot"),
+              br(),
+              includeHTML("Predacao.html"),
+              br()
     )
   )
 )
