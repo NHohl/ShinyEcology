@@ -1,34 +1,41 @@
 library("shiny")
 library("ggplot2")
 library("deSolve")
+library("shinythemes")
 
 # Must be saved in UTF-8 to show Portugese accents correctly.
 
-ui <- fluidPage(
-  titlePanel("A Primer of Ecology With Shiny ;p", "Nathalia's shiny app"),
-  br(),
-  tabsetPanel(type = "tabs",
-  tabPanel(title = "Crescimento Geométrico", sidebarLayout(
-    sidebarPanel(sliderInput("N0GeoIn", "N0",
-                             min = 1, max = 100, value = 5),
-                 numericInput("RGeoIn", "R",
-                             value = 1),
-                 sliderInput("tGeoIn", "t",
-                             min = 0, max = 100, value = 50),
-                 br(),
-
-                 h4(textOutput("geoOut"))
-                 ),
-    mainPanel(plotOutput("geoGplot"),
-    includeHTML("CrescimentoGeometrico.html")
-    )
-    )),
+ui <- fluidPage( #início do código da interface gráfica 
+  theme = shinytheme("flatly"),
+  titlePanel("Ecologia Interativa"), # título do aplicativo
+  h5("Nathália Hohl e Gabriel Santos"),
+  h5("Publicado sob a licença Atribuição-NãoComercial-CompartilhaIgual 4.0 Internacional."),
+  uiOutput("license"),
   
-  tabPanel(title = "Exponencial", sidebarLayout(
+  br(),
+  
+  tabsetPanel(type = "tabs",
+              tabPanel(title = "Crescimento Geométrico", sidebarLayout(
+                sidebarPanel(sliderInput("N0GeoIn", "N0",
+                                         min = 1, max = 100, value = 5),
+                             numericInput("RGeoIn", "R",
+                                          value = 1),
+                             sliderInput("tGeoIn", "t",
+                                         min = 0, max = 100, value = 50),
+                             br(),
+                             
+                             h4(textOutput("geoOut"))
+                ),
+                mainPanel(plotOutput("geoGplot"),
+                          includeHTML("CrescimentoGeometrico.html")
+                )
+              )),
+  
+  tabPanel(title = "Exponencial", sidebarLayout( #início do próximo modelo
     sidebarPanel(sliderInput("N0ExpIn", "N0",
                              min = 1, max = 100, value = 1),
                  numericInput("rExpIn", "r",
-                             value = 0.1),
+                             value = 0.1, step = 0.01),
                  sliderInput("tExpIn", "t",
                              min = 0, max = 100, value = 50),
                  h4(textOutput("expOut")), h4(textOutput("expDoublingTime")
@@ -41,7 +48,7 @@ ui <- fluidPage(
   tabPanel(title = "Logístico", sidebarLayout(
     sidebarPanel(sliderInput("N0LogIn", "N0",
                              min = 1, max = 100, value = 1),
-                 sliderInput("rLogIn", "r",
+                 numericInput("rLogIn", "r",
                              min = -3, max = 3, value = 0.2, step = 0.01),
                  sliderInput("tLogIn", "t",
                              min = 0, max = 100, value = 80),
@@ -56,17 +63,17 @@ ui <- fluidPage(
   
   tabPanel(title = "Competição", sidebarLayout(
     sidebarPanel(numericInput("N01Comp", "N01",
-                             min = 1, max = 3000, value = 50, step = 1),
+                             min = 1, max = 3000, value = 300, step = 1),
                  numericInput("N02Comp", "N02",
-                                          min = 1, max = 3000, value = 50, step = 1),
+                                          min = 1, max = 3000, value = 900, step = 1),
                  numericInput("r1Comp", "r1",
                              min = -5, max = 5, value = 0.5, step = 0.01),
                  numericInput("r2Comp", "r2",
                              min = -5, max = 5, value = 0.5, step = 0.01),
-                 numericInput("K1Comp", "K1", min = 1, max = 1000, value = 100, step = 1),
-                 numericInput("K2Comp", "K2", min = 0, max = 1000, value = 50, step = 1),
-                 numericInput("alphaComp", "alpha", min = 0, max = 100, value = 0.5, step = 0.005),
-                 numericInput("betaComp", "beta", min = 0, max = 100, value = 0.3, step = 0.005),
+                 numericInput("K1Comp", "K1", min = 1, max = 1000, value = 1000, step = 1),
+                 numericInput("K2Comp", "K2", min = 0, max = 1000, value = 1000, step = 1),
+                 numericInput("alphaComp", "alpha", min = 0, max = 100, value = 2, step = 0.005),
+                 numericInput("betaComp", "beta", min = 0, max = 100, value = 2, step = 0.005),
                  sliderInput("tComp", "t", min = 1, max = 1000, value = 100),
                  br(),
                  h4(textOutput("compOut1")),
@@ -84,20 +91,18 @@ ui <- fluidPage(
 
   tabPanel(title = "Predação", sidebarLayout(
     sidebarPanel(
-      numericInput("P0Pred", "População inicial de Predadores - P0\n 
-                   (milhares de indivíduos)",
-                   min = 0, max = 1000, value = 200, step = 0.1),
-      numericInput("V0Pred", "População inicial de Vítimas - V0\n 
-                   (milhares de indivíduos)",
-                   min = 0, max = 1000, value = 600, step = 0.1),
+      numericInput("P0Pred", "População inicial de Predadores - P0",
+                   min = 0, max = 1000, value = 300, step = 1),
+      numericInput("V0Pred", "População inicial de Vítimas - V0",
+                   min = 0, max = 1000, value = 900, step = 1),
       numericInput("rPred", "Taxa de cresc. intríns. da vítima - r)",
-                   min = 0, max = 3, value = 0.1, step = 0.1),
+                   min = -3, max = 3, value = 0.3, step = 0.05),
       numericInput("cPred", "Eficência de captura do predador (c ou alpha)",
-                   min = 0, max = 3, value = 0.001, step = 0.01),
+                   min = 0, max = 3, value = 0.001, step = 0.001),
       numericInput("aPred", "Eficência de conversão do predador (a ou beta)",
-                   min = 0, max = 3, value = 0.001, step = 0.1),
+                   min = 0, max = 3, value = 0.001, step = 0.001),
       numericInput("mPred", "Taxa de mortalidade do predador (m ou q)",
-                   min = 0, max = 3, value = 0.5, step = 0.1),
+                   min = 0, max = 3, value = 0.6, step = 0.05),
       numericInput("tPred", "t (de 0 a 1000)", 
                    min = 0, max = 1000, value = 100),
       br(),
@@ -120,17 +125,23 @@ ui <- fluidPage(
 
 server <- function(input, output){
   
+  #link for the license:
+  
+  url <- a("CC BY-NC-SA 4.0", 
+           href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.pt")
+    output$license <- renderUI({
+      tagList("Confira as regras de reprodução e modificação:", url)})
+  
   #----- GEOMETRIC GROWTH
-  geoGdf <- reactive({
+  geoGdf <- reactive({ # função reativa em que o modelo é implementado
     
-    N0 <- input$N0GeoIn
+    N0 <- input$N0GeoIn # variáveis determinadas pelo input do usuário
     R <- input$RGeoIn
-    
-    
     t <- seq(0, input$tGeoIn, by = 1) 
-    n <- N0 * (1 + R) ^ t 
     
-    df <- data.frame(t,n)
+    n <- N0 * (1 + R) ^ t # implementação do modelo
+    
+    df <- data.frame(t,n) # data frame que será utilizado para gerar o gráfico
   })
   
   #renders the N(t) tag for geometric growth
@@ -143,11 +154,13 @@ server <- function(input, output){
   
   
   #renders the GEOMETRIC GROWTH plot
-  
-  output$geoGplot <- renderPlot({
-    ggplot(geoGdf(), aes(x = t, y = n)) +
+  # output do modelo
+  output$geoGplot <- renderPlot({ 
+    ggplot(geoGdf(), aes(x = t, y = n)) + # função que utiliza o resultado da
+      #função reativa para gerar o gráfico
+    geom_point(colour='lightsteelblue4', size = 3) + # início dos parâmetros
+                                                     #estéticos do gráfico
     geom_line(linetype = "dashed") +
-    geom_point(colour='lightsteelblue4', size = 3) +
     ggtitle("Crescimento Geométrico (Em Passos)") +
     xlab("t") +
     ylab("N(t)") +
@@ -181,7 +194,7 @@ server <- function(input, output){
   output$expOut <- renderText({
     
     Nt <- tail(expGdf()$Nt, n = 1)
-    paste0("N(t) = ", Nt)
+    paste0("N(t) = ", round(Nt))
     
   })
   
@@ -201,7 +214,7 @@ server <- function(input, output){
           axis.text = element_text(size = 16, face = "bold")
     )
     })
-  output$expDoublingTime <- renderText(c("Tempo de duplicação =", log(2)/input$rExpIn))
+  output$expDoublingTime <- renderText(c("Tempo de duplicação =", round(log(2)/input$rExpIn , 2)))
 
   #-----LOGISTIC (DENSITY-DEPENDENT) GROWTH
   logGdf <- reactive({
@@ -255,16 +268,18 @@ server <- function(input, output){
     # t is the current time point in the integration
     # y is the current estimate of the variables in the ODE system.
     
-    steps <- seq(0, input$tComp, by = 1)
-  
+    steps <- seq(0, input$tComp, by = 1) # número passos a serem calculados
 
-    parms <- c(r1 = input$r1Comp, r2 = input$r2Comp, K1 = input$K1Comp,
-               beta = input$betaComp, K2 = input$K2Comp, alpha = input$alphaComp)
+    parms <- c(r1 = input$r1Comp, # parâmetros do modelo segundo input
+               r2 = input$r2Comp,
+               K1 = input$K1Comp,
+               beta = input$betaComp, 
+               K2 = input$K2Comp, 
+               alpha = input$alphaComp)
     
-    initialN <- c(input$N01Comp,input$N02Comp)
-    
+    initialN <- c(input$N01Comp,input$N02Comp) # N inicial de cada espécie
  
-    lv.comp2 <- function(t, n, parms) {
+    lv.comp2 <- function(t, n, parms) { # função que representa o modelo
       
       with(as.list(parms), {
         
@@ -275,15 +290,12 @@ server <- function(input, output){
       })
 
     }
-
-    
     out <- ode(y = initialN, times = steps, func = lv.comp2, parms = parms)
-    print(out)
     N1 = rep("N1",length(steps))
     N2 = rep("N2",length(steps))
     
     result <- data.frame(out, N1, N2) #N1 and N2 are used by the aes function to color the lines
-    print(tail(result))
+    print(head(result))
     result
   })
   
@@ -439,19 +451,19 @@ server <- function(input, output){
     result <- data.frame(out, V, P) #V and P are used by the aes function to color 
     #the lines.
     
-    print(head(result, 3))
-    print(tail(result, 3))
+    #print(head(result, 3))
+    #print(tail(result, 3))
     result
   })
   
   output$predOut1 <- renderText({
     Vt <- tail(Pred.df()$X1, n = 1)
-    paste0("V(t) = ", round(Vt, digits = 3))
+    paste0("V(t) = ", round(Vt))
   })
 
   output$predOut2 <- renderText({
     Pt <- tail(Pred.df()$X2, n = 1)
-    paste0("P(t) = ", round(Pt, digits = 3))
+    paste0("P(t) = ", round(Pt))
   })
   
   
