@@ -13,6 +13,20 @@ ui <- fluidPage( #início do código da interface gráfica
   uiOutput("license"),
   
   br(),
+  tabsetPanel(type = "tabs",
+              tabPanel(title = "Crescimento Geométrico",
+                       tabsetPanel(type = "tabs",
+                                   tabPanel(title = "Gráfico"),
+                                   tabPanel(title = "Explicação do Modelo"),
+                                   tabPanel(title = "Exemplos"),
+                                   tabPanel(title = "Exercícios"))),
+              tabPanel(title = "Crescimento Exponencial",
+                       tabsetPanel(type = "tabs"),
+                       tabPanel(title = "Gráfico"),
+                       tabPanel(title = "Explicação do Modelo"),
+                       tabPanel(title = "Exemplos"),
+                       tabPanel(title = "Exercícios"))
+  ),
   
   tabsetPanel(type = "tabs",
               tabPanel(title = "Crescimento Geométrico", sidebarLayout(
