@@ -54,11 +54,9 @@ ui <- fluidPage( #início do código da interface gráfica
                                               mainPanel(plotOutput("expGPlot"))
                                             )),
                                    tabPanel(title = "Explicação do Modelo",
-                                            includeHTML("CrescimentoExponencial.html")),
-                                   tabPanel(title = "Exemplos",
-                                            includeHTML("CrescimentoExponencial.html")),
+                                            includeHTML("Textos Markdown e HTML/CrescimentoExponencial_Explicação.html")),
                                    tabPanel(title = "Exercícios",
-                                            includeHTML("CrescimentoExponencial.html"))
+                                            includeHTML("Textos Markdown e HTML/CrescimentoExponencial_Exercícios.html"))
                                    
                        )),
               

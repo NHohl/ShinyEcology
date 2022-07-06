@@ -439,15 +439,15 @@ pode ser aproximado para: <span class="math display">\[e =
 (<span class="math inline">\(λ = 1+R\)</span>), que é multiplicada a
 <span class="math inline">\(N_0\)</span> a cada passo de tempo.</p>
 <p><span class="math display">\[N_t = N_0 λt\]</span></p>
-<p>No modelo exponencial, o termo que multiplicamos a <span class="math inline">\(N_0\)</span> a cada passo de tempo é <span class="math inline">\(er\)</span>.</p>
+<p>No modelo exponencial, o termo que multiplicamos a <span class="math inline">\(N_0\)</span> a cada passo de tempo é <span class="math inline">\(e^r\)</span>.</p>
 <p><span class="math display">\[N_t = N_0e^rt\]</span></p>
 <p>Lembre-se que pelas propriedades da potência, <span class="math inline">\(e^{rt}\)</span> é o mesmo que <span class="math inline">\((er)t\)</span> (leia-se <span class="math inline">\(e\)</span> elevado a <span class="math inline">\(r\)</span> elevado a <span class="math inline">\(t\)</span>). Por isso, a cada passo de tempo,
-estamos multiplicando <span class="math inline">\(N_0\)</span> por <span class="math inline">\(er\)</span>.</p>
-<p>Podemos igualar <span class="math inline">\(er\)</span> a <span class="math inline">\(λ\)</span> e a partir daí estabelecer a relação
+estamos multiplicando <span class="math inline">\(N_0\)</span> por <span class="math inline">\(e^r\)</span>.</p>
+<p>Podemos igualar <span class="math inline">\(e^r\)</span> a <span class="math inline">\(λ\)</span> e a partir daí estabelecer a relação
 eN_tre as taxas de crescimento nos dois modelos.</p>
 <p><span class="math display">\[λ =e^r\]</span></p>
 <p>E se calcularmos o logaritmo de ambos os lados, temos que:</p>
-<p><span class="math display">\[ln_ λ = r\]</span></p>
+<p><span class="math display">\[ln(λ) = r\]</span></p>
 <p>Então:</p>
 <ul>
 <li>se temos <span class="math inline">\(r\)</span> e queremos o valor
@@ -474,15 +474,129 @@ rápido</strong> é o crescimento.</p>
 lados:</p>
 <p><span class="math display">\[2 = e^{rt}\]</span></p>
 <p>Tiramos o logaritmo neperiano (base <span class="math inline">\(e\)</span>) em ambos ao lados:</p>
-<p><span class="math display">\[ln_2 = r  t\]</span> <span class="math display">\[t = ln_2 / r\]</span></p>
-<p>Temos que: <span class="math display">\[ln_2 =~
+<p><span class="math display">\[ln(2) = r  t\]</span> <span class="math display">\[t = ln(2) / r\]</span></p>
+<p>Temos que: <span class="math display">\[ln(2) =~
 0,6931471805...\]</span></p>
-<p>Arredondando para duas casas decimais, podemos considerar <span class="math inline">\(ln_2 = 0,69\)</span>.</p>
+<p>Arredondando para duas casas decimais, podemos considerar <span class="math inline">\(ln(2) = 0,69\)</span>.</p>
 <p><span class="math display">\[t_{duplicação} = 0,69/r\]</span></p>
 <p>Isso vale para qualquer população com crescimento exponencial
 contínuo e significa que o <strong>tempo de duplicação depende apenas da
 taxa de crescimento intrínseca, r</strong>, pois o numerador é uma
-constante (<span class="math inline">\(ln_2\)</span>).</p>
+constante (<span class="math inline">\(ln(2)\)</span>).</p>
+</div>
+<div id="comparação-entre-o-crescimento-geométrico-e-o-exponencial" class="section level3">
+<h3>Comparação entre o crescimento geométrico e o exponencial</h3>
+<p>No crescimento geométrico (ou discreto), o tamanho da população em um
+tempo <span class="math inline">\(t\)</span> é definido por:</p>
+<p><span class="math display">\[N_t = N_{0} λ^t\]</span></p>
+<center>
+ou
+</center>
+<p><span class="math display">\[N_t = N_{0}(1+R)^{t}\]</span></p>
+<p>Pense no crescimento populacional que ocorre em <span class="math inline">\(t_1\)</span>:</p>
+<p><span class="math display">\[N_1 = (1+R)^1 N_0\]</span></p>
+<p>Agora vamos ver o que acontece se esse crescimento ocorrer em dois
+sub-passos de tempo entre <span class="math inline">\(t_0\)</span> e
+<span class="math inline">\(t_1\)</span>, ao invés de em um único passo
+ao final de <span class="math inline">\(t_1\)</span>.</p>
+<center>
+<p>[IMAGEM]</p>
+</center>
+<p>Teremos dois passos de tempo menores, com a mesma taxa de crescimento
+<span class="math inline">\(R\)</span> dividida entre os dois:</p>
+<p><span class="math display">\[N_1 = (1+ R/2)^2 N_0\]</span></p>
+<p>Considere <span class="math inline">\(N_0 = 100\)</span> e <span class="math inline">\(R = 0,4\)</span>:</p>
+<p><strong>1)</strong> No primeiro caso (normal do crescimento
+geométrico), o crescimento ocorre ao final de <span class="math inline">\(t_1\)</span>:</p>
+<span class="math display">\[N_1 = N_0(1+R)^1\]</span> <span class="math display">\[N_1 = 100 (1+ 0,4)^1\]</span> <span class="math display">\[N_1 = 100 * 1,4 \]</span>
+<center>
+(crescendo em um único passo)
+</center>
+<p><span class="math display">\[N_1 = 140\]</span></p>
+<p><strong>2)</strong> No segundo caso, o crescimento ocorre em dois
+sub-passos entre <span class="math inline">\(t_0\)</span> e <span class="math inline">\(t_1\)</span>:</p>
+<p><span class="math display">\[N_{1} = (1+ R/2)^2 N_0\]</span> <span class="math display">\[N_{1} = (1 + 0,2)^2  100\]</span> <span class="math display">\[N_{1} = 100 * 1,2 * 1,2\]</span> <span class="math display">\[100 * 1,2 = 120 [1º passo]\]</span> <span class="math display">\[N_{1} = 120 * 1,2 \]</span> <span class="math display">\[120 * 1,2 = 144 [2º passo]\]</span> <span class="math display">\[N_{1} = 144\]</span></p>
+<p>No primeiro caso, os <span class="math inline">\(100\)</span>
+indivíduos se reproduzem uma única vez e geram mais <span class="math inline">\(40\)</span>, totalizando <span class="math inline">\(140\)</span>.</p>
+<p>No segundo caso, a população se reproduz duas vezes naquele intervalo
+de tempo. Primeiro, os <span class="math inline">\(100\)</span>
+indivíduos geram mais <span class="math inline">\(20\)</span>, que já
+estarão prontos para se reproduzir no próximo passo dentro do intervalo.
+No segundo passo, temos <span class="math inline">\(120\)</span>
+indivíduos se reproduzindo, gerando mais <span class="math inline">\(24\)</span>.</p>
+<p>Consequentemente, a população chega a <span class="math inline">\(t_1\)</span> com <span class="math inline">\(144\)</span> indivíduos, ao invés de apenas <span class="math inline">\(140\)</span>.</p>
+<p>Repare que isto não é o mesmo que calcular <span class="math inline">\(N_2\)</span> , que teria um valor maior pela
+operação <span class="math inline">\(N_2 = (1+R)^2 N_0\)</span>, pois no
+nosso cálculo o valor de <span class="math inline">\(R\)</span> também é
+dividido pelo número de passos (utilizamos <span class="math inline">\(R/2\)</span>).</p>
+<p>Se já temos essa diferença (quatro indivíduos a mais) dividindo um
+passo em dois, imagine se tivéssemos um número muito grande de passos de
+tempo ou infinitos passos entre <span class="math inline">\(t_0\)</span>
+e <span class="math inline">\(t_1\)</span>. Teríamos a população se
+reproduzindo continuamente no decorrer do tempo, cada indivíduo
+adicionando outros à população imediatamente. Este é o caso do
+<strong>crescimento exponencial</strong> ou
+<strong>contínuo</strong>.</p>
+<p>Quanto mais o número de passos entre t_0 e t_1 se aproxima de
+infinito, mais nos aproximamos ao quanto a população crescerá em
+crescimento exponencial</p>
+<p>Vamos testar para 1000 passos:</p>
+<p><span class="math display">\[N_1 = N_0 (1 + R/1000)^{1000} =
+149,17\]</span></p>
+<p>Este valor já é próximo do que obteríamos ao dividir o intervalo
+entre <span class="math inline">\(t_0\)</span> e <span class="math inline">\(t_1\)</span> em infinitos passos, que é, a grosso
+modo, o que o crescimento exponencial faz, pois ele considera o
+crescimento instantâneo dentro de intervalos muito pequenos.</p>
+<p>Compare a diferença no crescimento quando se divide o intervalo entre
+<span class="math inline">\(t_0\)</span> e <span class="math inline">\(t_1\)</span> em diferentes números de passos:</p>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Número de passos entre <span class="math inline">\(t_0\)</span> e
+<span class="math inline">\(t_1\)</span></th>
+<th>Aplicação no modelo geométrico</th>
+<th>Cálculo do valor (<span class="math inline">\(N_0 = 100;R =
+0,4\)</span>)</th>
+<th><span class="math inline">\(N_1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(N_1 = N_0 (1+R)^1\)</span></td>
+<td><span class="math inline">\(N_1 = 100 * 1,4\)</span></td>
+<td><span class="math inline">\(140\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(2\)</span></td>
+<td><span class="math inline">\(N_1 = N_0 (1+ R/2)^2\)</span></td>
+<td><span class="math inline">\(N_1 = 100 * 1,22\)</span></td>
+<td><span class="math inline">\(144\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(1000\)</span></td>
+<td><span class="math inline">\(N_1 = N_0 (1 +
+R/1000)^1000\)</span></td>
+<td><span class="math inline">\(N_1 = 1000 * 1,00041000\)</span></td>
+<td><span class="math inline">\(149,17\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(∞\)</span></td>
+<td><span class="math inline">\(lim_t-&gt; ∞ (1 + R/t)^t\)</span></td>
+<td></td>
+<td><span class="math inline">\(149,18\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Quando dividimos o intervalo de <span class="math inline">\(t_0\)</span> a <span class="math inline">\(t_1\)</span> em um número que tende a infinitos
+passos, temos o quanto a população cresceria em crescimento exponencial
+contínuo. <br></p>
 </div>
 
 
