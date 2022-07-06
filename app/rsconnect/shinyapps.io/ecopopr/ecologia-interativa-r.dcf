@@ -1,0 +1,11 @@
+name: ecologia-interativa-r
+title:
+username:
+account: ecopopr
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6602281
+bundleId: 6075583
+url: https://ecopopr.shinyapps.io/ecologia-interativa-r/
+when: 1657129512.75891
+lastSyncTime: 1657129512.75893

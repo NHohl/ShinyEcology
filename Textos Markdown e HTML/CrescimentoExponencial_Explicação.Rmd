@@ -1,0 +1,115 @@
+---
+title: "Crescimento Exponencial - Explicação"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Premissas do crescimento exponencial
+
+-   Assim como no modelo geométrico, não há limitações ao crescimento da população, que pode crescer indefinidamente. Recursos como nutrientes e espaço não são limitantes.
+
+-   As taxas de natalidade e mortalidade per capita ($B$ e $D$) não variam. Com isso, a taxa de crescimento da população (nesse modelo, $r$) também é constante.
+
+-   O crescimento é denso independente por não depender da densidade da população.
+
+-   A taxa de crescimento não varia com a quantidade de indivíduos existentes, nem há qualquer freio para o crescimento com o aumento da população.
+
+-   Todos os indivíduos estão aptos a se reproduzir instantaneamente e com qualquer outro indivíduo da população.
+
+### Definição matemática
+
+Com base nas premissas acima, temos que o crescimento contínuo ocorre segundo a seguinte expressão exponencial: 
+$$N_t = N_0e^{rt}$$
+
+Esta equação nos diz o seguinte: para qualquer valor de $t$, o tamanho da população naquele tempo ($N_t$) é igual ao tamanho inicial em $t_{0}$ ($N_{0}$) multiplicado por $e$ (número de Euler) elevado a $r$ vezes $t$. 
+
+Note que, pelas propriedades da potência, $e^{rt}$ (*e* elevado a [*r* vezes *t*]) é o mesmo que $(e^{r})^t$ ([$e$ elevado a $r$] elevado a $t$). Por isso, a cada passo de tempo, estamos multiplicando $N_0$ pelo termo $e^{r}$. (Assim como no modelo geométrico multiplicamos $N_{0}$ por $λ$ a cada passo.) 
+
+Além disso, o quanto a população está crescendo em um determinado momento depende apenas do número de indivíduos já existentes $N$ e da taxa de crescimento instantânea (ou intrínseca) $r$. Representamos esse crescimento na forma de uma equação diferencial: 
+
+$$dN/dt = rN$$
+
+Esta é a derivada da função $N_t = N_0e^{rt}$ e é numericamente igual ao coeficiente angular (inclinação) da curva em qualquer ponto sobre ela. 
+
+Note que $dN/dt$ é a notação da derivada, não se atribui valores para $dN$ nem $dt$. O $d$ representa uma variação. De modo simples, significa “a variação em $N$ a cada (pequena) variação em $t$”.
+
+No contexto do crescimento populacional, o **valor da derivada** é o quanto a população está crescendo entre aquele ponto e um ponto muito próximo à direita (um intervalo de tempo muito pequeno). De forma simplificada, diz-se que é **o quanto a população está crescendo a cada ponto da curva**.
+
+
+### O que é $e$ (número de *Euler*)?
+	
+A constante $e$ é a base do logaritmo natural, ou neperiano. 
+
+A notação $ln_x$ é o mesmo que dizer $log_{e}x$, ou seja, logaritmo de $x$ na base $e$
+.
+Lembre-se que logaritmo é a operação que pergunta: “A que expoente devo elevar a base para chegar no número x?”. É a operação inversa da potência, operação presente nas funções exponenciais.
+
+É matematicamente conveniente descrever funções exponenciais com base $e$ por uma série de relações matemáticas, como a de que suas derivadas são iguais a elas mesmas multiplicadas por uma constante.
+
+$e$ é um número irracional, mas pode ser aproximado para:
+$$e = 2,72$$
+
+### A relação entre $r$, $R$ e $λ$
+
+No modelo geométrico, temos a taxa de crescimento finita lambda ($λ = 1+R$), que é multiplicada a $N_0$ a cada passo de tempo.
+
+$$N_t = N_0 λt$$
+
+No modelo exponencial, o termo que multiplicamos a $N_0$ a cada passo de tempo é $er$.
+
+$$N_t = N_0e^rt$$
+
+Lembre-se que pelas propriedades da potência, $e^{rt}$ é o mesmo que $(er)t$  (leia-se $e$ elevado a $r$ elevado a $t$). Por isso, a cada passo de tempo, estamos multiplicando $N_0$ por $er$.
+
+Podemos igualar $er$ a $λ$ e a partir daí estabelecer a relação eN_tre as taxas de crescimento nos dois modelos.
+
+$$λ =e^r$$
+
+E se calcularmos o logaritmo de ambos os lados, temos que:
+
+$$ln_ λ = r$$
+
+Então:
+
+- se temos $r$ e queremos o valor de $λ$ correspondente, calculamos $e$ elevado a $r$;
+- se temos $λ$ e queremos o valor de $r$ correspondente, calculamos o logaritmo de $λ$.
+		
+Ex:
+$$r = 0,3$$
+
+$$λ =e^r$$
+$$λ = 0,3e$$
+$$e = 2,72$$
+$$λ = 2,72^{0,3}$$
+$$λ = 1,35$$
+
+
+### Tempo de duplicação
+
+Uma forma de descrever o quão rápido uma população cresce é pelo tempo que leva até ela duplicar em tamanho. Quanto **menor** o tempo de duplicação, **mais rápido** é o crescimento.
+
+Para calcularmos o tempo de duplicação basta igualar $N_t$ a $2N_0$ e resolver a equação para $t$.
+
+$$N_t = N_0e^{rt}$$
+$$2N_0 = N_0  e^{rt}$$
+
+Dividimos por $N_0$ em ambos os lados:
+
+$$2 = e^{rt}$$
+
+Tiramos o logaritmo neperiano (base $e$) em ambos ao lados:
+
+$$ln_2 = r  t$$
+$$t = ln_2 / r$$
+
+Temos que:
+$$ln_2 =~ 0,6931471805...$$
+
+Arredondando para duas casas decimais, podemos considerar $ln_2 = 0,69$.
+
+$$t_{duplicação} = 0,69/r$$
+
+Isso vale para qualquer população com crescimento exponencial contínuo e significa que o **tempo de duplicação depende apenas da taxa de crescimento intrínseca, r**, pois o numerador é uma constante ($ln_2$).

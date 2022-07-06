@@ -1,0 +1,28 @@
+Falta:
+
+Logístico - explicação
+Logístico - exemplos
+Logístico - explicação
+
+Competição - explicação
+Competição - exemplos
+Competição - exercícios
+
+Predação - explicação
+Predação - exemplos
+Predação - exercícios
+
+
+- explicação
+- exemplos
+- exercícios
+
+
+Textos já passados para Markdown:
+
+Geométrico - Explicação
+Geométrico - Exercícios
+
+Exponencial - explicação
+Exponencial - exemplos
+Exponencial - exercícios
