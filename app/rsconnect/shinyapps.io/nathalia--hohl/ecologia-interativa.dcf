@@ -5,9 +5,10 @@ account: nathalia--hohl
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3458603
-bundleId: 5379957
+bundleId: 6037121
 url: https://nathalia--hohl.shinyapps.io/ecologia-interativa/
-when: 1639657606.6867
+when: 1656009805.07741
+lastSyncTime: 1656009805.07743
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .RData

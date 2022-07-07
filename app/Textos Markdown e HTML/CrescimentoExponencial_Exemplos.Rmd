@@ -1,0 +1,95 @@
+---
+title: "Crescimento Exponencial - Exemplos"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Comparação entre o crescimento geométrico e o exponencial
+
+No crescimento geométrico (ou discreto), o tamanho da população em um tempo $t$ é definido por:
+
+$$N_t = N_{0} λ^t$$
+
+<center>
+ou
+</center>
+
+$$N_t = N_{0}(1+R)^{t}$$
+
+Pense no crescimento populacional que ocorre em $t_1$:
+
+$$N_1 = (1+R)^1 N_0$$
+
+Agora vamos ver o que acontece se esse crescimento ocorrer em dois sub-passos de tempo entre $t_0$ e $t_1$, ao invés de em um único passo ao final de $t_1$.
+
+<center>
+
+[IMAGEM]
+
+</center>
+
+Teremos dois passos de tempo menores, com a mesma taxa de crescimento $R$ dividida entre os dois:
+
+$$N_1 = (1+ R/2)^2 N_0$$
+
+Considere $N_0 = 100$ e $R = 0,4$:
+
+
+
+**1)** No primeiro caso (normal do crescimento geométrico), o crescimento ocorre ao final de $t_1$:
+      
+$$N_1 = N_0(1+R)^1$$
+$$N_1 = 100 (1+ 0,4)^1$$
+$$N_1 = 100 * 1,4 $$
+<center>
+(crescendo  em  um  único  passo)
+</center>
+
+$$N_1 = 140$$
+
+
+
+**2)** No segundo caso, o crescimento ocorre em dois sub-passos entre $t_0$ e $t_1$:
+
+      
+$$N_{1} = (1+ R/2)^2 N_0$$
+$$N_{1} = (1 + 0,2)^2  100$$
+$$N_{1} = 100 * 1,2 * 1,2$$
+$$100 * 1,2 = 120 [1º passo]$$
+$$N_{1} = 120 * 1,2 $$
+$$120 * 1,2 = 144 [2º passo]$$
+$$N_{1} = 144$$
+
+No primeiro caso, os $100$ indivíduos se reproduzem uma única vez e geram mais $40$, totalizando $140$.
+        
+No segundo caso, a população se reproduz duas vezes naquele intervalo de tempo. Primeiro, os $100$ indivíduos geram mais $20$, que já estarão prontos para se reproduzir no próximo passo dentro do intervalo. No segundo passo, temos $120$ indivíduos se reproduzindo, gerando mais $24$. 
+
+Consequentemente, a população chega a $t_1$ com $144$ indivíduos, ao invés de apenas $140$.
+
+Repare que isto não é o mesmo que calcular $N_2$ , que teria um valor maior pela operação $N_2 = (1+R)^2 N_0$, pois no nosso cálculo o valor de $R$ também é dividido pelo número de passos (utilizamos $R/2$).
+
+Se já temos essa diferença (quatro indivíduos a mais) dividindo um passo em dois, imagine se tivéssemos um número muito grande de passos de tempo ou infinitos passos entre $t_0$ e $t_1$. Teríamos a população se reproduzindo continuamente no decorrer do tempo, cada indivíduo adicionando outros à população imediatamente. Este é o caso do **crescimento exponencial** ou **contínuo**.
+
+Quanto mais o número de passos entre t_0 e t_1 se aproxima de infinito, mais nos aproximamos ao quanto a população crescerá em crescimento exponencial
+
+Vamos testar para 1000 passos:
+
+$$N_1 = N_0 (1 + R/1000)^{1000} = 149,17$$ 
+
+Este valor já é próximo do que obteríamos ao dividir o intervalo entre $t_0$ e $t_1$ em infinitos passos, que é, a grosso modo, o que o crescimento exponencial faz, pois ele considera o crescimento instantâneo dentro de intervalos muito pequenos.
+
+Compare a diferença no crescimento quando se divide o intervalo entre $t_0$ e $t_1$ em diferentes números de passos:
+        
+
+|Número de passos entre $t_0$ e $t_1$|        Aplicação        no modelo geométrico |        Cálculo do valor ($N_0 = 100;R = 0,4$)  |  $N_1$  |
+|---|---|---|---|
+| $1$         |        $N_1 = N_0 (1+R)^1$                          |  $N_1         = 100 * 1,4$                         |                          $140$                     |
+| $2$   |        $N_1        = N_0 (1+ R/2)^2$                                    |         $N_1         = 100 * 1,22$                         |                  $144$                     |
+|        $1000$  |        $N_1         = N_0  (1 + R/1000)^1000$          |  $N_1         = 1000 * 1,00041000$           |                  $149,17$           |
+| $∞$         | $lim_t-> ∞         (1 + R/t)^t$                        |                                                                                |                          $149,18$                   |
+
+Quando dividimos o intervalo de $t_0$ a $t_1$ em um número que tende a infinitos passos, temos o quanto a população cresceria em crescimento exponencial contínuo.
+<br>

@@ -1,0 +1,33 @@
+---
+title: "Crescimento Geométrico - Explicação do Modelo"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Crescimento Geométrico
+
+
+### Entendendo o modelo
+
+
+Premissas:
+
+- Não há recursos limitantes para o crescimento da população
+- As taxas de natalidade e mortalidade não variam e consequentemente, a taxa discreta de crescimento ($R$) é constante
+- Todos os indivíduos podem se reproduzir com todos os outros
+- Todas as reproduções ocorrem em momentos específicos (discretos) do tempo (sejam dias, estações, anos etc) e ocorrem todas de uma vez a cada passo de tempo 
+
+
+### Equações do modelo
+
+$$N_{t+1} = N_{t}(1+R)$$
+$$N_t = N_{0} (λ)^t$$
+
+### Termos empregados
+
+- $B$ -> taxa de natalidade discreta per capita (a cada 1 indivíduo, quantos nascem a cada passo de tempo)
+- $D$ -> taxa de mortalidade discreta per capita (a cada 1 indivíduo, quantos morrem a cada passo de tempo)
+- $(B-D)$ = $R$ -> taxa de crescimento finita ou discreta
