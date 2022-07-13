@@ -32,11 +32,9 @@ ui <- fluidPage( #início do código da interface gráfica
                                      )
                                    )),
                                    tabPanel(title = "Explicação do Modelo",
-                                            includeHTML("CrescimentoGeometrico.html")),
-                                   tabPanel(title = "Exemplos",
-                                            includeHTML("CrescimentoGeometrico.html")),
+                                            includeHTML("Textos Markdown e HTML/CrescimentoGeometrico_Explicação.html")),
                                    tabPanel(title = "Exercícios",
-                                            includeHTML("CrescimentoGeometrico.html")))),
+                                            includeHTML("Textos Markdown e HTML/CrescimentoGeometrico_Exercícios.html")))),
               
               
               tabPanel(title = "Crescimento Exponencial",
@@ -57,8 +55,7 @@ ui <- fluidPage( #início do código da interface gráfica
                                             includeHTML("Textos Markdown e HTML/CrescimentoExponencial_Explicação.html")),
                                    tabPanel(title = "Exercícios",
                                             includeHTML("Textos Markdown e HTML/CrescimentoExponencial_Exercícios.html"))
-                                   
-                       )),
+                                   )),
               
               
               tabPanel(title = "Logístico",
@@ -78,11 +75,9 @@ ui <- fluidPage( #início do código da interface gráfica
                                               mainPanel(plotOutput("logGPlot"))
                                             )),
                                    tabPanel(title = "Explicação do Modelo",
-                                            includeHTML("Logistico.html")),
-                                   tabPanel(title = "Exemplos",
-                                            includeHTML("Logistico.html")),
+                                            includeHTML("Textos Markdown e HTML/CrescimentoLogistico_Explicação.html")),
                                    tabPanel(title = "Exercícios",
-                                            includeHTML("Logistico.html")))),
+                                            includeHTML("Textos Markdown e HTML/CrescimentoLogistico_Exercícios.html")))),
               
               
               tabPanel(title = "Competição",

@@ -11,7 +11,7 @@
 
 
 
-<title>Crescimento Exponencial - Explicação</title>
+<title>CrescimentoExponencial_Explicação.knit</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -361,13 +361,14 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Crescimento Exponencial - Explicação</h1>
 
 </div>
 
 
-<div id="premissas-do-crescimento-exponencial" class="section level3">
-<h3>Premissas do crescimento exponencial</h3>
+<div id="crescimento-exponencial---explicação-do-modelo" class="section level2">
+<h2>Crescimento Exponencial - Explicação do modelo</h2>
+<div id="premissas" class="section level3">
+<h3>Premissas</h3>
 <ul>
 <li><p>Assim como no modelo geométrico, não há limitações ao crescimento
 da população, que pode crescer indefinidamente. Recursos como nutrientes
@@ -500,10 +501,15 @@ sub-passos de tempo entre <span class="math inline">\(t_0\)</span> e
 <span class="math inline">\(t_1\)</span>, ao invés de em um único passo
 ao final de <span class="math inline">\(t_1\)</span>.</p>
 <center>
-<p>[IMAGEM]</p>
+<p><img src="data:image/png;base64,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" /></p>
 </center>
-<p>Teremos dois passos de tempo menores, com a mesma taxa de crescimento
-<span class="math inline">\(R\)</span> dividida entre os dois:</p>
+<p>Teremos dois passos de tempo menores:</p>
+<ul>
+<li><p><span class="math inline">\(t0\)</span> a <span class="math inline">\(t1/2\)</span></p></li>
+<li><p><span class="math inline">\(t1/2\)</span> a <span class="math inline">\(t1\)</span></p></li>
+</ul>
+<p>A mesma taxa de crescimento <span class="math inline">\(R\)</span> é
+dividida entre os dois:</p>
 <p><span class="math display">\[N_1 = (1+ R/2)^2 N_0\]</span></p>
 <p>Considere <span class="math inline">\(N_0 = 100\)</span> e <span class="math inline">\(R = 0,4\)</span>:</p>
 <p><strong>1)</strong> No primeiro caso (normal do crescimento
@@ -537,9 +543,9 @@ reproduzindo continuamente no decorrer do tempo, cada indivíduo
 adicionando outros à população imediatamente. Este é o caso do
 <strong>crescimento exponencial</strong> ou
 <strong>contínuo</strong>.</p>
-<p>Quanto mais o número de passos entre t_0 e t_1 se aproxima de
-infinito, mais nos aproximamos ao quanto a população crescerá em
-crescimento exponencial</p>
+<p>Quanto mais o número de passos entre <span class="math inline">\(t_0\)</span> e <span class="math inline">\(t_1\)</span> se aproxima de infinito, mais nos
+aproximamos ao quanto a população crescerá em crescimento
+exponencial</p>
 <p>Vamos testar para 1000 passos:</p>
 <p><span class="math display">\[N_1 = N_0 (1 + R/1000)^{1000} =
 149,17\]</span></p>
@@ -561,8 +567,8 @@ crescimento instantâneo dentro de intervalos muito pequenos.</p>
 <th>Número de passos entre <span class="math inline">\(t_0\)</span> e
 <span class="math inline">\(t_1\)</span></th>
 <th>Aplicação no modelo geométrico</th>
-<th>Cálculo do valor (<span class="math inline">\(N_0 = 100;R =
-0,4\)</span>)</th>
+<th>Cálculo do valor com <span class="math inline">\(N_0 = 100\)</span>
+e <span class="math inline">\(R = 0,4\)</span></th>
 <th><span class="math inline">\(N_1\)</span></th>
 </tr>
 </thead>
@@ -597,6 +603,24 @@ R/1000)^1000\)</span></td>
 <p>Quando dividimos o intervalo de <span class="math inline">\(t_0\)</span> a <span class="math inline">\(t_1\)</span> em um número que tende a infinitos
 passos, temos o quanto a população cresceria em crescimento exponencial
 contínuo. <br></p>
+<div id="referências" class="section level4">
+<h4>Referências</h4>
+<p>GOTELLI, N. J. <strong>Ecologia</strong>. 4. ed. Londrina: Editora
+Planta, 2007</p>
+<p>SANDERSON, G. <strong>The Essence of Calculus</strong>. Youtube, 28
+abr. 2017. Disponível em: <a href="https://www.youtube.com/watch?v=WUvTyaaNkzM" class="uri">https://www.youtube.com/watch?v=WUvTyaaNkzM</a>. Acesso em:
+2 jul. 2022.</p>
+<p>SANDERSON, G. <strong>The paradox of the derivative | Chapter 2,
+Essence of calculus</strong>. Youtube, 29 abr. 2017. Disponível em: <a href="https://www.youtube.com/watch?v=9vKqVkMQHKk" class="uri">https://www.youtube.com/watch?v=9vKqVkMQHKk</a>. Acesso em:
+2 jul. 2022.</p>
+<p>SANDERSON, G. <strong>What’s so special about Euler’s number e? |
+Chapter 5, Essence of calculus</strong>. Youtube, 2 maio 2017.
+Disponível em: <a href="https://www.youtube.com/watch?v=m2MIpDrF7Es" class="uri">https://www.youtube.com/watch?v=m2MIpDrF7Es</a>. Acesso em:
+2 jul. 2022.</p>
+<p>STEVENS, M. H. <strong>A Primer of Ecology with R</strong>. New York:
+Springer, 2009.</p>
+</div>
+</div>
 </div>
 
 

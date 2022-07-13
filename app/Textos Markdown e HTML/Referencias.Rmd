@@ -19,6 +19,8 @@ SANDERSON, G. **The paradox of the derivative | Chapter 2, Essence of calculus**
 
 SANDERSON, G. **What's so special about Euler's number e? | Chapter 5, Essence of calculus**. Youtube, 2 maio 2017. Disponível em: <https://www.youtube.com/watch?v=m2MIpDrF7Es>. Acesso em: 2 jul. 2022.
 
+STEVENS, M. H. **A Primer of Ecology with R**. New York: Springer, 2009.
+
 ## Modelos
 
 STEVENS, M. H. **A Primer of Ecology with R**. New York: Springer, 2009.

@@ -1,5 +1,4 @@
 ---
-title: "Crescimento Exponencial - Explicação"
 output: html_document
 ---
 
@@ -7,7 +6,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Premissas do crescimento exponencial
+## Crescimento Exponencial - Explicação do modelo
+
+### Premissas
 
 -   Assim como no modelo geométrico, não há limitações ao crescimento da população, que pode crescer indefinidamente. Recursos como nutrientes e espaço não são limitantes.
 
@@ -134,11 +135,18 @@ Agora vamos ver o que acontece se esse crescimento ocorrer em dois sub-passos de
 
 <center>
 
-[IMAGEM]
+![](images/exp1.png)
 
 </center>
 
-Teremos dois passos de tempo menores, com a mesma taxa de crescimento $R$ dividida entre os dois:
+Teremos dois passos de tempo menores:
+
+- $t0$ a $t1/2$ 
+
+- $t1/2$ a $t1$
+
+
+A mesma taxa de crescimento $R$ é dividida entre os dois:
 
 $$N_1 = (1+ R/2)^2 N_0$$
 
@@ -180,7 +188,7 @@ Repare que isto não é o mesmo que calcular $N_2$ , que teria um valor maior pe
 
 Se já temos essa diferença (quatro indivíduos a mais) dividindo um passo em dois, imagine se tivéssemos um número muito grande de passos de tempo ou infinitos passos entre $t_0$ e $t_1$. Teríamos a população se reproduzindo continuamente no decorrer do tempo, cada indivíduo adicionando outros à população imediatamente. Este é o caso do **crescimento exponencial** ou **contínuo**.
 
-Quanto mais o número de passos entre t_0 e t_1 se aproxima de infinito, mais nos aproximamos ao quanto a população crescerá em crescimento exponencial
+Quanto mais o número de passos entre $t_0$ e $t_1$ se aproxima de infinito, mais nos aproximamos ao quanto a população crescerá em crescimento exponencial
 
 Vamos testar para 1000 passos:
 
@@ -191,7 +199,7 @@ Este valor já é próximo do que obteríamos ao dividir o intervalo entre $t_0$
 Compare a diferença no crescimento quando se divide o intervalo entre $t_0$ e $t_1$ em diferentes números de passos:
         
 
-|Número de passos entre $t_0$ e $t_1$|        Aplicação        no modelo geométrico |        Cálculo do valor ($N_0 = 100;R = 0,4$)  |  $N_1$  |
+|Número de passos entre $t_0$ e $t_1$|        Aplicação        no modelo geométrico |        Cálculo do valor com $N_0 = 100$ e $R = 0,4$  |  $N_1$  |
 |---|---|---|---|
 | $1$         |        $N_1 = N_0 (1+R)^1$                          |  $N_1         = 100 * 1,4$                         |                          $140$                     |
 | $2$   |        $N_1        = N_0 (1+ R/2)^2$                                    |         $N_1         = 100 * 1,22$                         |                  $144$                     |
@@ -200,3 +208,15 @@ Compare a diferença no crescimento quando se divide o intervalo entre $t_0$ e $
 
 Quando dividimos o intervalo de $t_0$ a $t_1$ em um número que tende a infinitos passos, temos o quanto a população cresceria em crescimento exponencial contínuo.
 <br>
+
+#### Referências
+
+GOTELLI, N. J. **Ecologia**. 4. ed. Londrina: Editora Planta, 2007
+
+SANDERSON, G. **The Essence of Calculus**. Youtube, 28 abr. 2017. Disponível em: <https://www.youtube.com/watch?v=WUvTyaaNkzM>. Acesso em: 2 jul. 2022.
+
+SANDERSON, G. **The paradox of the derivative | Chapter 2, Essence of calculus**. Youtube, 29 abr. 2017. Disponível em: <https://www.youtube.com/watch?v=9vKqVkMQHKk>. Acesso em: 2 jul. 2022.
+
+SANDERSON, G. **What's so special about Euler's number e? | Chapter 5, Essence of calculus**. Youtube, 2 maio 2017. Disponível em: <https://www.youtube.com/watch?v=m2MIpDrF7Es>. Acesso em: 2 jul. 2022.
+
+STEVENS, M. H. **A Primer of Ecology with R**. New York: Springer, 2009.

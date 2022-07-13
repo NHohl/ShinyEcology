@@ -11,7 +11,7 @@
 
 
 
-<title>Crescimento Geométrico</title>
+<title>Competição_Exercícios.knit</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -361,80 +361,129 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Crescimento Geométrico</h1>
 
 </div>
 
 
-<div id="entendendo-o-modelo" class="section level2">
-<h2>Entendendo o modelo</h2>
-<div id="premissas" class="section level3">
-<h3>Premissas:</h3>
-<ul>
-<li>Não há recursos limitantes para o crescimento da população</li>
-<li>As taxas de natalidade e mortalidade não variam e consequentemente,
-a taxa discreta de crescimento (<span class="math inline">\(R\)</span>)
-é constante</li>
-<li>Todos os indivíduos podem se reproduzir com todos os outros</li>
-<li>Todas as reproduções ocorrem em momentos específicos (discretos) do
-tempo (sejam dias, estações, anos etc) e ocorrem todas de uma vez a cada
-passo de tempo</li>
-</ul>
-</div>
-<div id="equações-do-modelo" class="section level3">
-<h3>Equações do modelo</h3>
-<p><span class="math display">\[N_{t+1} = N_{t}(1+R)\]</span> <span class="math display">\[N_t = N_{0} (λ)^t\]</span></p>
-</div>
-<div id="termos-empregados" class="section level3">
-<h3>Termos empregados</h3>
-<ul>
-<li><span class="math inline">\(B\)</span> -&gt; taxa de natalidade
-discreta per capita (a cada 1 indivíduo, quantos nascem a cada passo de
-tempo)</li>
-<li><span class="math inline">\(D\)</span> -&gt; taxa de mortalidade
-discreta per capita (a cada 1 indivíduo, quantos morrem a cada passo de
-tempo)</li>
-<li><span class="math inline">\((B-D)\)</span> = <span class="math inline">\(R\)</span> -&gt; taxa de crescimento finita ou
-discreta</li>
-</ul>
-</div>
-</div>
-<div id="exemplo" class="section level2">
-<h2>Exemplo</h2>
-<p>A cada passo de tempo nasce <span class="math inline">\(1\)</span>
-indivíduo a cada indivíduo na população e morre <span class="math inline">\(0,5\)</span> indivíduo a cada indivíduo na
-população. Ou seja:</p>
-<ul>
-<li><span class="math inline">\(B\)</span> = <span class="math inline">\(1\)</span> e <span class="math inline">\(D\)</span> = <span class="math inline">\(0,5\)</span></li>
-<li><span class="math inline">\(R\)</span> = <span class="math inline">\(0,5\)</span> -&gt; quantos indivíduos serão
-acrescidos à população por cada cada indivíduo já existente a cada passo
-de tempo</li>
-</ul>
-<p>Se temos 10 indivíduos, cada um deles gerará 0,5 indivíduo,
-considerando o que cada um gerará por reprodução (<span class="math inline">\(B\)</span>) e descontando quantos morrerão per
-capita (<span class="math inline">\(D\)</span>).</p>
-<p>No próximo passo de tempo, teremos a adição de <span class="math inline">\(5\)</span> indivíduos e o tamanho da população
-passará a ser <span class="math inline">\(N = 15\)</span>. <span class="math inline">\(R = 0,5\)</span> significa que a população cresce
-<span class="math inline">\(50%\)</span> a cada passo e para obter esse
-valor precisamos multiplicar o <span class="math inline">\(N\)</span>
-por <span class="math inline">\(1,5\)</span>. Esse novo valor (<span class="math inline">\(1 + R\)</span>) pode ser multiplicado ao número de
-indivíduos para saber quantos existirão no próximo passo de tempo. <span class="math display">\[N_t+1 = N_t (1+R)\]</span></p>
-<p>Chamamos <span class="math inline">\((1+R)\)</span> de <span class="math inline">\(λ\)</span> (lambda) e temos que:</p>
-<p><span class="math display">\[N_{t+1}= N_t * λ\]</span></p>
-<p>Como as taxas de natalidade e mortalidade per capita (<span class="math inline">\(B\)</span> e <span class="math inline">\(D\)</span>) permanecem constantes, <span class="math inline">\(R\)</span> (taxa de crescimento finita) também
-permanece. Então para cada passo no tempo, basta multiplicar a população
-por lambda (<span class="math inline">\(1+R\)</span>) novamente. <span class="math display">\[N_t = N_0 λ^t\]</span> No nosso exemplo, para 3
-passos de tempo, teríamos:</p>
-<span class="math display">\[N3 = 10 * 1,5 * 1,5 * 1,5 = 33,75\]</span>
-<center>
-ou
-</center>
-<p><span class="math display">\[N3 = 10 * 1,53 = 33,75\]</span></p>
-<div id="referências" class="section level4">
-<h4>Referências</h4>
-<p>GOTELLI, N. J. <strong>Ecologia</strong>. 4. ed. Londrina: Editora
-Planta, 2007</p>
-</div>
+<div id="competição-interespecífica---exercícios" class="section level2">
+<h2>Competição Interespecífica - Exercícios</h2>
+<p>No modelo de Competição, utilize os parâmetros informados para
+visualizar os gráficos resultantes e responder às perguntas. O ponto
+preto na área do gráfico representa as condições iniciais. Utilize seus
+conhecimentos para verificar o comportamento dos gráficos em cada área
+(se necessário, utilize um rascunho para anotar os vetores de cada
+área).</p>
+<ol style="list-style-type: decimal">
+<li>Utilize os parâmetros a seguir para o gráfico de competição:</li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th>Parâmetro</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>N1; N2</td>
+<td>50</td>
+</tr>
+<tr class="even">
+<td>r1; r2</td>
+<td>0,5</td>
+</tr>
+<tr class="odd">
+<td>K1</td>
+<td>100</td>
+</tr>
+<tr class="even">
+<td>K2</td>
+<td>50</td>
+</tr>
+<tr class="odd">
+<td>α</td>
+<td>0,5</td>
+</tr>
+<tr class="even">
+<td>β</td>
+<td>0,3</td>
+</tr>
+<tr class="odd">
+<td>t</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>a)Qual o resultado da competição? Uma das espécies exclui a outra? Se
+sim, qual?</p>
+<p>b)Qual o(s) pontos de equilíbrio do sistema? O equilíbrio neste(s)
+ponto(s) é estável ou instável?</p>
+<p>c)Altere os valores de r de ambas as espécies. O resultado da
+competição é alterado? O que acontece?</p>
+<p>d)Se retirássemos uma das espécies da competição, o que aconteceria
+com a outra?</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Altere apenas os seguintes valores:</li>
+</ol>
+<p>N1 = 110</p>
+<p>N2 = 10</p>
+<p>a)O que acontece com os gráficos?</p>
+<p>b)O resultado da competição é alterado? Por quê?</p>
+<p>c)Qual o(s) pontos de equilíbrio do sistema? O equilíbrio neste(s)
+ponto(s) é estável ou instável?</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Utilize os seguintes parâmetros:</li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th>Parâmetro</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>N1</td>
+<td>300</td>
+</tr>
+<tr class="even">
+<td>N2</td>
+<td>900</td>
+</tr>
+<tr class="odd">
+<td>r1; r2</td>
+<td>0,5</td>
+</tr>
+<tr class="even">
+<td>K1; K2</td>
+<td>1000</td>
+</tr>
+<tr class="odd">
+<td>α</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>β</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>t</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<ol style="list-style-type: lower-alpha">
+<li>Qual o resultado da competição? Uma das espécies exclui a outra? Se
+sim, qual?</li>
+<li>Qual o(s) pontos de equilíbrio do sistema? O equilíbrio neste(s)
+ponto(s) é estável ou instável?</li>
+</ol>
+<ol start="4" style="list-style-type: decimal">
+<li>Mude as abundâncias iniciais para:</li>
+</ol>
+<p>N1 = 500</p>
+<p>N2 = 400</p>
+<p>O resultado da competição é alterado? Por quê?</p>
 </div>
 
 

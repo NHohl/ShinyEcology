@@ -11,7 +11,7 @@
 
 
 
-<title>Crescimento Geométrico</title>
+<title>Predação_Exercícios.knit</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -361,80 +361,72 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Crescimento Geométrico</h1>
 
 </div>
 
 
-<div id="entendendo-o-modelo" class="section level2">
-<h2>Entendendo o modelo</h2>
-<div id="premissas" class="section level3">
-<h3>Premissas:</h3>
-<ul>
-<li>Não há recursos limitantes para o crescimento da população</li>
-<li>As taxas de natalidade e mortalidade não variam e consequentemente,
-a taxa discreta de crescimento (<span class="math inline">\(R\)</span>)
-é constante</li>
-<li>Todos os indivíduos podem se reproduzir com todos os outros</li>
-<li>Todas as reproduções ocorrem em momentos específicos (discretos) do
-tempo (sejam dias, estações, anos etc) e ocorrem todas de uma vez a cada
-passo de tempo</li>
-</ul>
-</div>
-<div id="equações-do-modelo" class="section level3">
-<h3>Equações do modelo</h3>
-<p><span class="math display">\[N_{t+1} = N_{t}(1+R)\]</span> <span class="math display">\[N_t = N_{0} (λ)^t\]</span></p>
-</div>
-<div id="termos-empregados" class="section level3">
-<h3>Termos empregados</h3>
-<ul>
-<li><span class="math inline">\(B\)</span> -&gt; taxa de natalidade
-discreta per capita (a cada 1 indivíduo, quantos nascem a cada passo de
-tempo)</li>
-<li><span class="math inline">\(D\)</span> -&gt; taxa de mortalidade
-discreta per capita (a cada 1 indivíduo, quantos morrem a cada passo de
-tempo)</li>
-<li><span class="math inline">\((B-D)\)</span> = <span class="math inline">\(R\)</span> -&gt; taxa de crescimento finita ou
-discreta</li>
-</ul>
-</div>
-</div>
-<div id="exemplo" class="section level2">
-<h2>Exemplo</h2>
-<p>A cada passo de tempo nasce <span class="math inline">\(1\)</span>
-indivíduo a cada indivíduo na população e morre <span class="math inline">\(0,5\)</span> indivíduo a cada indivíduo na
-população. Ou seja:</p>
-<ul>
-<li><span class="math inline">\(B\)</span> = <span class="math inline">\(1\)</span> e <span class="math inline">\(D\)</span> = <span class="math inline">\(0,5\)</span></li>
-<li><span class="math inline">\(R\)</span> = <span class="math inline">\(0,5\)</span> -&gt; quantos indivíduos serão
-acrescidos à população por cada cada indivíduo já existente a cada passo
-de tempo</li>
-</ul>
-<p>Se temos 10 indivíduos, cada um deles gerará 0,5 indivíduo,
-considerando o que cada um gerará por reprodução (<span class="math inline">\(B\)</span>) e descontando quantos morrerão per
-capita (<span class="math inline">\(D\)</span>).</p>
-<p>No próximo passo de tempo, teremos a adição de <span class="math inline">\(5\)</span> indivíduos e o tamanho da população
-passará a ser <span class="math inline">\(N = 15\)</span>. <span class="math inline">\(R = 0,5\)</span> significa que a população cresce
-<span class="math inline">\(50%\)</span> a cada passo e para obter esse
-valor precisamos multiplicar o <span class="math inline">\(N\)</span>
-por <span class="math inline">\(1,5\)</span>. Esse novo valor (<span class="math inline">\(1 + R\)</span>) pode ser multiplicado ao número de
-indivíduos para saber quantos existirão no próximo passo de tempo. <span class="math display">\[N_t+1 = N_t (1+R)\]</span></p>
-<p>Chamamos <span class="math inline">\((1+R)\)</span> de <span class="math inline">\(λ\)</span> (lambda) e temos que:</p>
-<p><span class="math display">\[N_{t+1}= N_t * λ\]</span></p>
-<p>Como as taxas de natalidade e mortalidade per capita (<span class="math inline">\(B\)</span> e <span class="math inline">\(D\)</span>) permanecem constantes, <span class="math inline">\(R\)</span> (taxa de crescimento finita) também
-permanece. Então para cada passo no tempo, basta multiplicar a população
-por lambda (<span class="math inline">\(1+R\)</span>) novamente. <span class="math display">\[N_t = N_0 λ^t\]</span> No nosso exemplo, para 3
-passos de tempo, teríamos:</p>
-<span class="math display">\[N3 = 10 * 1,5 * 1,5 * 1,5 = 33,75\]</span>
-<center>
-ou
-</center>
-<p><span class="math display">\[N3 = 10 * 1,53 = 33,75\]</span></p>
-<div id="referências" class="section level4">
-<h4>Referências</h4>
-<p>GOTELLI, N. J. <strong>Ecologia</strong>. 4. ed. Londrina: Editora
-Planta, 2007</p>
-</div>
+<div id="exercícios---predação" class="section level2">
+<h2>Exercícios - Predação</h2>
+<p><strong>Dados iniciais:</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Parâmetro</th>
+<th>Valor</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>P0</td>
+<td>300</td>
+<td>tamanho inicial da população de predadores</td>
+</tr>
+<tr class="even">
+<td>V0</td>
+<td>900</td>
+<td>tamanho inicial da população de presas</td>
+</tr>
+<tr class="odd">
+<td>r</td>
+<td>0,3</td>
+<td>taxa de crescimento intrínseco das presas</td>
+</tr>
+<tr class="even">
+<td>c <em>ou</em> α</td>
+<td>0,001</td>
+<td>eficiência de captura</td>
+</tr>
+<tr class="odd">
+<td>a <em>ou</em> β</td>
+<td>0,001</td>
+<td>eficiência de conversão</td>
+</tr>
+<tr class="even">
+<td>m <em>ou</em> q</td>
+<td>0,06</td>
+<td>taxa de mortalidade do predador</td>
+</tr>
+<tr class="odd">
+<td>t</td>
+<td>100</td>
+<td>número de passos de tempo decorridos</td>
+</tr>
+</tbody>
+</table>
+<p><strong>1)</strong> Reduza a taxa de crescimento intrínseco das
+vítimas para 0,1. O que acontece com a população de vítimas e a de
+predadores, em relação a seus números mínimos e máximos e o tempo dos
+ciclos?</p>
+<p><strong>2)</strong> Agora mude para r = 0,01 e t = 300. O que
+acontece com as populações, em relação a seus valores mínimos? O que
+teria acontecido de diferente na natureza e como isso é diferente do
+modelo?</p>
+<p><strong>3)</strong> O que você espera que aconteceria com a população
+de predadores, na vida real, caso fatores antrópicos como caça e
+destruição de habitat diminuísse a taxa de crescimento intrínseco das
+vítimas? Se fosse um mesopredador, o que mais poderia acontecer no
+ecossistema?</p>
 </div>
 
 
